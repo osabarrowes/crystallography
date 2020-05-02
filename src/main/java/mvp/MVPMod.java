@@ -1,6 +1,5 @@
 package mvp;
 
-import mvp.common.lib.LibReferences;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -18,11 +17,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(LibReferences.MOD_ID)
+@Mod(MVPMod.MOD_ID)
 public class MVPMod
 {
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
+
+    public static final String MOD_ID = "mvp";
+
+    public static final String MOD_NAME= "Minimum Viable Product";
 
     public MVPMod() {
         // Register the setup method for modloading
