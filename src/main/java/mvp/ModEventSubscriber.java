@@ -26,7 +26,7 @@ public class ModEventSubscriber {
         r.registerAll(
                 // Here you can register items.
                 setup(new Item(new Item.Properties()), "example_item"),
-                setup(new Item(new Item.Properties()), "example_item2")
+                setup(new Item(new Item.Properties()), "example_item_2")
         );
     }
 
