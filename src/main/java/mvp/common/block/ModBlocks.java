@@ -20,14 +20,14 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 @Mod.EventBusSubscriber(modid = LibReferences.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModBlocks{
-    public static Block testBlock;
+    public static Block.Properties builder = Block.Properties.create(Material.ROCK).hardnessAndResistance(3.5F).sound(SoundType.STONE);
+    public static Block testBlock = new Block(builder);
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> evt) {
 
         IForgeRegistry<Block> r = evt.getRegistry();
 
-        Block.Properties builder = Block.Properties.create(Material.ROCK).hardnessAndResistance(3.5F).sound(SoundType.STONE);
         register(r, new Block(builder), BlockNames.TEST_BLOCK);
     }
 
@@ -35,6 +35,7 @@ public class ModBlocks{
     public static void registerItemBlocks(RegistryEvent.Register<Item> evt) {
         IForgeRegistry<Item> r = evt.getRegistry();
         Item.Properties props = ModItems.defaultBuilder();
+
         register(r, new BlockItem(testBlock, props), testBlock.getRegistryName());
     }
     // Helper methods copied from botania
