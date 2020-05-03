@@ -1,7 +1,10 @@
 package mvp;
 
+import com.google.common.eventbus.Subscribe;
 import mvp.MVPMod;
 import mvp.init.ModItemGroups;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
@@ -23,11 +26,18 @@ public class ModEventSubscriber {
     // The method signature here is boilerplate code to subscribe to Forge's event bus for Item registration.
     @SubscribeEvent
     public static void onRegisterItems(RegistryEvent.Register<Item> event) {
-        IForgeRegistry<Item> r = event.getRegistry();
-        r.registerAll(
+        event.getRegistry().registerAll(
                 // Here you can register items.
                 setup(new Item(new Item.Properties().group(ModItemGroups.MOD_ITEM_GROUP)), "example_item"),
                 setup(new Item(new Item.Properties().group(ModItemGroups.MOD_ITEM_GROUP)), "example_item_2")
+        );
+    }
+
+    @SubscribeEvent
+    public static void onRegisterBlocks(RegistryEvent.Register<Block> event) {
+        event.getRegistry().registerAll(
+                // Here you can register blocks.
+                setup(new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)), "example_ore")
         );
     }
 
