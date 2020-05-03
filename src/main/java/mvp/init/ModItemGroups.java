@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 public class ModItemGroups {
 
     // Note: if there are no Items which use your ItemGroup, then your ItemGroup will not render.
-    public static final ItemGroup MOD_ITEM_GROUP = new ModItemGroup(MVPMod.MOD_ID, () -> new ItemStack(Items.LIGHT_BLUE_BANNER));
+    public static final ItemGroup MOD_ITEM_GROUP = new ModItemGroup(MVPMod.MOD_ID, () -> new ItemStack(ModItems.EXAMPLE_ITEM_2));
     /*
      * Helper class to provide the icon for the tab. Usually, you use an item: but ItemGroups are created
      * before items, and so items are null at the time of an ItemGroup's creation. We use a supplier to
