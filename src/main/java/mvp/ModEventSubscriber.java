@@ -1,6 +1,7 @@
 package mvp;
 
 import mvp.MVPMod;
+import mvp.init.ModItemGroups;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
@@ -25,8 +26,8 @@ public class ModEventSubscriber {
         IForgeRegistry<Item> r = event.getRegistry();
         r.registerAll(
                 // Here you can register items.
-                setup(new Item(new Item.Properties()), "example_item"),
-                setup(new Item(new Item.Properties()), "example_item_2")
+                setup(new Item(new Item.Properties().group(ModItemGroups.MOD_ITEM_GROUP)), "example_item"),
+                setup(new Item(new Item.Properties().group(ModItemGroups.MOD_ITEM_GROUP)), "example_item_2")
         );
     }
 
