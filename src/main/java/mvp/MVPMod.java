@@ -1,9 +1,11 @@
 package mvp;
 
+import mvp.init.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
@@ -39,6 +41,13 @@ public class MVPMod
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+
+        // It looks like Cadiboo handles this slightly differently. Rather than registering
+        // methods here within MVPMod to the event bus, Cadiboo simply creates delayed register
+        // objects in the various classes where they should be (BLOCKS are registered in ModBlocks)
+        // and then subscribes them using the following code:
+        final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        ModBlocks.BLOCKS.register(modEventBus);
     }
 
     private void setup(final FMLCommonSetupEvent event)
@@ -75,6 +84,7 @@ public class MVPMod
     }
     */
 
+    /*
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
     // Event bus for receiving Registry Events)
     @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
@@ -85,4 +95,7 @@ public class MVPMod
             LOGGER.info("HELLO from Register Block");
         }
     }
+
+     */
+
 }
