@@ -33,13 +33,13 @@ public class ModEventSubscriber {
         );
     }
 
-    @SubscribeEvent
-    public static void onRegisterBlocks(RegistryEvent.Register<Block> event) {
-        event.getRegistry().registerAll(
-                // Here you can register blocks.
-                setup(new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)), "example_ore")
-        );
-    }
+//    @SubscribeEvent
+//    public static void onRegisterBlocks(RegistryEvent.Register<Block> event) {
+//        event.getRegistry().registerAll(
+//                // Here you can register blocks.
+//                setup(new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)), "example_ore")
+//        );
+//    }
 
     // Item registration done "correctly"
     public static <T extends IForgeRegistryEntry<T>> T setup(final T entry, final String name) {

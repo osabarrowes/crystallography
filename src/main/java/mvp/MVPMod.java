@@ -55,6 +55,7 @@ public class MVPMod
         // some preinit code
         LOGGER.info("HELLO FROM PREINIT");
         LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+        LOGGER.info("Example Ore >> {}", ModBlocks.EXAMPLE_ORE.get().getRegistryName());
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
