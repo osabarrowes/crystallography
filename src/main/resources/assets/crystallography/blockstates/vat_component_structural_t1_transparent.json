@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mvp:block/vat_component_structural_t1_transparent"
+      "model": "crystallography:block/vat_component_structural_t1_transparent"
     }
   }
 }
