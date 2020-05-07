@@ -21,6 +21,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public class ModBlocks {
 
+    // TODO blocks should have properties more indicative of their structure rather than all being the same material, hardness and resistance, etc.
     public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, MVPMod.MOD_ID);
 
     // This block has the ROCK material, meaning it needs at least a wooden pickaxe to break it. It is very similar to Iron Ore
@@ -29,5 +30,6 @@ public class ModBlocks {
     public static final RegistryObject<Block> TEST_BLOCK = BLOCKS.register("test_block", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
     public static final RegistryObject<Block> LEACH = BLOCKS.register("leach", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
     public static final RegistryObject<Block> ENCHANTING_BLOCK = BLOCKS.register("enchanting_block", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
+    public static final RegistryObject<Block> NUCLEATION_BLOCK = BLOCKS.register("nucleation_block", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
 
 }
