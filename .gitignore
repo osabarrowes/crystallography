@@ -19,7 +19,10 @@ build
 
 # other
 eclipse
-run
+run/*
+
+# VCS on world saves
+!run/saves
 
 # Files from Forge MDK
 forge*changelog.txt

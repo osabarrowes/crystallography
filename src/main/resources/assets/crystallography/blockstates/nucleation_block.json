@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "crystallography:block/nucleation_block"
+    }
+  }
+}
