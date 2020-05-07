@@ -7,7 +7,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "mvp:vat_component_structural_t1"
+          "name": "crystallography:vat_component_structural_t1"
         }
       ],
       "conditions": [
