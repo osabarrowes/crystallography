@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
 /*
-Necro made a commit
+test commit on branch xenonni
  */
 @Mod(MVPMod.MOD_ID)
 public class MVPMod
