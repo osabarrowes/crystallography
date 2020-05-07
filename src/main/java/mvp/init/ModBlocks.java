@@ -29,6 +29,7 @@ public class ModBlocks {
     public static final RegistryObject<Block> EXAMPLE_ORE_2 = BLOCKS.register("example_ore_2", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
     public static final RegistryObject<Block> TEST_BLOCK = BLOCKS.register("test_block", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
     public static final RegistryObject<Block> LEACH = BLOCKS.register("leach", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
+    public static final RegistryObject<Block> VAT_COMPONENT_STRUCTURAL_T1 = BLOCKS.register("vat_component_structural_t1", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
     public static final RegistryObject<Block> ENCHANTING_BLOCK = BLOCKS.register("enchanting_block", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
     public static final RegistryObject<Block> NUCLEATION_BLOCK = BLOCKS.register("nucleation_block", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
 

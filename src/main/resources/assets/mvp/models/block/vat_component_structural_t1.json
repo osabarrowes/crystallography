@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "mvp:block/vat_component_structural_t1"
+  }
+}
