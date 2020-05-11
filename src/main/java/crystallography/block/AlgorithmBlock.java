@@ -39,7 +39,9 @@ public class AlgorithmBlock extends Block{
     {
         if (!worldIn.isRemote)
         {
-            LOGGER.info("Block at " + pos.toString() + " was activated");
+            LOGGER.info("My name is " + this.getRegistryName());
+            LOGGER.info("I also go by " +  worldIn.getBlockState(pos).getBlock().getRegistryName());
+            LOGGER.info("The block above me is: " + worldIn.getBlockState(pos.add(0,1,0)).getBlock().getRegistryName());
         }
         return ActionResultType.SUCCESS;
     }
