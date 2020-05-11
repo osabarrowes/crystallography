@@ -19,6 +19,7 @@ import org.apache.logging.log4j.Logger;
  * @author xenonni
  */
 public class AlgorithmBlock extends Block{
+    //TODO make this class abstract
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -26,21 +27,8 @@ public class AlgorithmBlock extends Block{
         super(properties);
     }
 
-    /*
-     * Copied from Cadiboo's example mod
-     * Called when a player right clicks our block.
-     *
-     * @deprecated Call via {@link BlockState#onBlockActivated(World, PlayerEntity, Hand, BlockRayTraceResult)} whenever possible.
-     * Implementing/overriding is fine.
-     *
-     * onBlockActivated was removed from Block in Forge 31.1.0
-     * you MUST use BlockState.onBlockActivated instead
-     *
-     * public ActionResultType onBlockActivated(final BlockState state, final World worldIn, final BlockPos pos, final PlayerEntity player, final Hand handIn, final BlockRayTraceResult hit)
-     */
-
     /**
-     * I think this method is called when the block is activated, specifically in this case by right clicking
+     * This method is called when the player right clicks on the block.
      *
      * Code provided by forgedocs
      * https://mcforge.readthedocs.io/en/latest/blocks/interaction/#onblockactivated
