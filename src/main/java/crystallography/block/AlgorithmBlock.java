@@ -48,7 +48,19 @@ public class AlgorithmBlock extends Block{
      */
     public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
     {
-        LOGGER.info("Block at " + pos.toString() + " was activated");
-        return true;
+        return false;
     }
+
+    /*
+     * Called when the block is left clicked
+     *
+    @Override
+    public void onBlockClicked(BlockState state, World worldIn, BlockPos pos, PlayerEntity player)
+    {
+        // if(!worldIn.isRemote)
+        System.out.println("hello? anyone?");
+        LOGGER.info("Block at " + pos.toString() + " was activated");
+        // return true;
+    }
+    */
 }
