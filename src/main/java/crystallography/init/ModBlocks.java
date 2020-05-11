@@ -1,6 +1,7 @@
 package crystallography.init;
 
 import crystallography.Crystallography;
+import crystallography.block.AlgorithmBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraftforge.fml.RegistryObject;
@@ -27,11 +28,13 @@ public class ModBlocks {
     // This block has the ROCK material, meaning it needs at least a wooden pickaxe to break it. It is very similar to Iron Ore
     public static final RegistryObject<Block> EXAMPLE_ORE = BLOCKS.register("example_ore", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
     public static final RegistryObject<Block> EXAMPLE_ORE_2 = BLOCKS.register("example_ore_2", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
-    public static final RegistryObject<Block> TEST_BLOCK = BLOCKS.register("test_block", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
     public static final RegistryObject<Block> LEACH = BLOCKS.register("leach", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
     public static final RegistryObject<Block> VAT_COMPONENT_STRUCTURAL_T1 = BLOCKS.register("vat_component_structural_t1", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
     public static final RegistryObject<Block> VAT_COMPONENT_STRUCTURAL_T1_TRANSPARENT = BLOCKS.register("vat_component_structural_t1_transparent", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
     public static final RegistryObject<Block> ENCHANTING_BLOCK = BLOCKS.register("enchanting_block", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
     public static final RegistryObject<Block> NUCLEATION_BLOCK = BLOCKS.register("nucleation_block", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
 
+    // I'm going to try registering this as an AlgorithmBlock
+    // Registering this as an AlgorithmBlock didn't break anything, but it didn't do anything (noticable) either.
+    public static final RegistryObject<Block> TEST_BLOCK = BLOCKS.register("test_block", () -> new AlgorithmBlock(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
 }
