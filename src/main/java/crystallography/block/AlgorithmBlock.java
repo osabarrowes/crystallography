@@ -46,9 +46,14 @@ public class AlgorithmBlock extends Block{
      * https://mcforge.readthedocs.io/en/latest/blocks/interaction/#onblockactivated
      * @return true on successful activation
      */
-    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
+    @Override
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
     {
-        return false;
+        if (!worldIn.isRemote)
+        {
+            LOGGER.info("Block at " + pos.toString() + " was activated");
+        }
+        return ActionResultType.SUCCESS;
     }
 
     /*
