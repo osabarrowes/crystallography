@@ -1,6 +1,7 @@
 package crystallography.init;
 
 import crystallography.Crystallography;
+import crystallography.block.TestBlock;
 import crystallography.block.Vat_component_functional_overseer_T1;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -36,5 +37,5 @@ public class ModBlocks {
 
     // I'm going to try registering this as an Vat_component_functional_overseer_T1
     // Registering this as an Vat_component_functional_overseer_T1 didn't break anything, but it didn't do anything (noticable) either.
-    public static final RegistryObject<Block> TEST_BLOCK = BLOCKS.register("test_block", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
+    public static final RegistryObject<Block> TEST_BLOCK = BLOCKS.register("test_block", () -> new TestBlock(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
 }
