@@ -1,5 +1,6 @@
 package crystallography.block;
 
+import crystallography.libs.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,6 +14,8 @@ import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -34,18 +37,12 @@ public class TestBlock extends Block {
         if(!worldIn.isRemote) {
             LOGGER.info("Testing, one two three!");
 
-            BlockPos.Mutable cursor = new BlockPos.Mutable();
-
             LOGGER.info("My neighbors are:");
-            for(Direction direction : NEIGHBORS) {
-                LOGGER.info(worldIn.getBlockState(cursor.setPos(pos).move(direction)).getBlock().getRegistryName() + " at coordinate" + cursor.toString() + ", direction " + direction);
+            Map<Direction, Block> neighbors = Util.getNeighbors(worldIn, pos);
+            for(Direction d : neighbors.keySet()) {
+                LOGGER.info(neighbors.get(d).getRegistryName() + " in direction " + d);
             }
         }
         return ActionResultType.SUCCESS;
-    }
-
-    private Set<Block> getNeighborsHardCoded() {
-
-        return null;
     }
 }
