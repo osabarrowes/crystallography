@@ -15,6 +15,7 @@ public abstract class MultiBlockComponent extends Block{
         super(properties);
     }
 
+    /*
     public abstract boolean isValid(){
         // if all my neighbors valid
         //      if my specific algorithm says I am valid
@@ -23,6 +24,7 @@ public abstract class MultiBlockComponent extends Block{
         // return false;
 
     }
+    */
 
 //    void validateNeighbors();
 //        for (neighbor : neighborhood)
@@ -30,13 +32,34 @@ public abstract class MultiBlockComponent extends Block{
 //                neighbor.Validate();
         // once all the neighbors are validated
 
-    /**
-     * Returns this block.
-     * @return
-     */
-    public boolean isValidAlgorithm()
-    {
 
+    public boolean isValid() {
+
+        if(isNeighborsValid() == false) {
+            return  false;
+        }
+
+        // validate myself
+        /**
+         * "What the fuck am I?" i.e net.minecraft.Dirt
+         * Grab my validation function from class
+         * import function that defines the logic for this block
+         * run that function against this block
+         * If that function return true
+         * ..
+         * else
+         * ..
+         */
+        return true;
+    }
+    public boolean isNeighborsValid () {
+        //for each neighbor if neighbor is a multiblock component ask neighbor
+        //if it is valid.
+        //call neighbors isvalid.
+        // get block position of neighbor
+        // block position to block
+        // block.isValid();
+        return true;
     }
 
 
