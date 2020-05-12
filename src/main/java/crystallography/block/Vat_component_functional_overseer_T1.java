@@ -18,12 +18,11 @@ import org.apache.logging.log4j.Logger;
  *
  * @author xenonni
  */
-public class AlgorithmBlock extends Block{
-    //TODO make this class abstract
+public class Vat_component_functional_overseer_T1 extends Block{
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public AlgorithmBlock(final Block.Properties properties) {
+    public Vat_component_functional_overseer_T1(final Block.Properties properties) {
         super(properties);
     }
 
