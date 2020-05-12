@@ -30,9 +30,9 @@ public abstract class MultiBlockComponent extends Block{
      * The first block that starts the algorithm passes this as the parameter
      * @return
      */
-    public boolean imValid(MultiBlockComponent blockThatAsked) {
+    public boolean imValid(MultiBlockComponent blockThatAsked, Set<MultiBlockComponent> structure) {
 
-        if(isNeighborsValid() == false) {
+        if(isNeighborsValid(this, structure) == false) {
             return  false;
         }
 
@@ -40,29 +40,34 @@ public abstract class MultiBlockComponent extends Block{
             return false;
         }
 
+        structure.add(this);
         return true;
     }
 
-    public boolean isNeighborsValid () {
+    public boolean isNeighborsValid (MultiBlockComponent blockThatAsked, Set<MultiBlockComponent> structure) {
         //for each neighbor if neighbor is a multiblock component ask neighbor
         //if it is valid.
         //
         Set<MultiBlockComponent> neighborhood = new HashSet<>(); // TODO get all blocks which share a face with this block, put them in this set
-
-        // FIXME Don't call imValid on the block who asked if you're valid
-
         for(MultiBlockComponent neighbor : neighborhood)
         {
-            if (neighbor.imValid(this) == false)
+            // only visit neighbors that are not in structure
+            if (structure.contains(neighbor))
+            {
+                continue;
+            }
+
+            // don't visit the block who asked
+            if(neighbor.equals(blockThatAsked))
+            {
+                continue;
+            }
+
+            if (neighbor.imValid(this, structure) == false)
             {
                 return false;
             }
         }
-        // foreach neighbor
-        //  call neighbors imvalid.
-        //  get block position of neighbor
-        //  block position to block
-        //  block.imValid();
         return true;
     }
 

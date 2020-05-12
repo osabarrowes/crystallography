@@ -20,15 +20,15 @@ public abstract class ControllerBlock extends MultiBlockComponent {
     }
 
     // Only one controllerBlock is allowed per multiblock structure.
-    public boolean isValid(Set<MultiBlockComponent> notMyStructure)
+    public boolean isValid(/*Set<MultiBlockComponent> notMyStructure*/)
     {
-        for(MultiBlockComponent comp : notMyStructure)
+        for(MultiBlockComponent comp : structure)
         {
             if(comp instanceof ControllerBlock)
                 return false;
         }
         structure.add(this);
-        return isValid();
+        return imValid(this, structure);
     }
     // ControllerBlock will start the algorithm
 
