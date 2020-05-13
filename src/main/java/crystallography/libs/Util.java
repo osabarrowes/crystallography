@@ -10,14 +10,15 @@ import java.util.*;
 public class Util {
 
     /**
+     * Helper array specifying directions from minecraft's Direction class. This way, we don't have to use pos.add(1, 0, 0), pos.add(0, 1, 0), etc.
+     */
+    public static final Direction[] NEIGHBORS = new Direction[]{Direction.WEST, Direction.EAST, Direction.NORTH, Direction.SOUTH, Direction.DOWN, Direction.UP};
+
+    /**
      * Don't let anyone instantiate this class.
      */
     private Util(){}
 
-    /**
-     * Helper array specifying directions from minecraft's Direction class. This way, we don't have to use pos.add(1, 0, 0), pos.add(0, 1, 0), etc.
-     */
-    public static final Direction[] NEIGHBORS = new Direction[]{Direction.WEST, Direction.EAST, Direction.NORTH, Direction.SOUTH, Direction.DOWN, Direction.UP};
 
     /**
      * Helper method for getting the neighbors of a Block.
