@@ -37,7 +37,8 @@ public class TestBlock extends MultiBlockComponent {
         thisPos = pos;
         if(!worldIn.isRemote) {
 
-            LOGGER.info("I have " + Util.countAirNeighbors(worldIn, pos) + "air neighbors.");
+            LOGGER.info("I have " + Util.countAirNeighbors(worldIn, pos) + " air neighbors.");
+            LOGGER.info("I have " + Util.countAirAxes(worldIn, pos) + " air axes.");
             //LOGGER.info("Validity check: " + isValid());
         }
         return ActionResultType.SUCCESS;
