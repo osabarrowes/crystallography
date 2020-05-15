@@ -5,31 +5,26 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import javax.annotation.Nullable;
 import java.util.*;
+
+import static net.minecraft.block.Blocks.*;
 
 public class Util {
 
     /**
      * Helper array specifying directions from minecraft's Direction class. This way, we don't have to use pos.add(1, 0, 0), pos.add(0, 1, 0), etc.
-     * Use {@link Direction.values()} instead
+     * @deprecated Use {@link Direction#values()} instead
      */
     @Deprecated
+    // CLEANME remove
     public static final Direction[] NEIGHBORS = new Direction[]{Direction.WEST, Direction.EAST, Direction.NORTH, Direction.SOUTH, Direction.DOWN, Direction.UP};
-
-    /**
-     * A block can be one of these categories in a cuboid structure.
-     */
-    public enum CuboidCategory {
-        CORNER, LIP, EDGE, FACE, ILLEGAL
-    }
 
     /**
      * Don't let anyone instantiate this class.
      */
     private Util(){}
-
 
     /**
      * Helper method for getting the neighbors of a Block.
@@ -43,94 +38,137 @@ public class Util {
         BlockPos.Mutable cursor = new BlockPos.Mutable();
 
         for(Direction direction : Direction.values()) {
-             neighborMap.put(direction, worldIn.getBlockState(cursor.setPos(centerBlockPos).move(direction)).getBlock());
+            neighborMap.put(direction, worldIn.getBlockState(cursor.setPos(centerBlockPos).move(direction)).getBlock());
         }
         return neighborMap;
     }
 
     /**
-     * Returns the cuboid category of the specified block. Used in ensuring a block is part of a cuboid multiblock structure.
-     * @param worldIn the world of the block
-     * @param pos the position of the block
-     * @return the cuboid category of the block.
+     * Convenience overload for {@link #countRecognizedNeighborAxes(World, BlockPos, Collection, Collection)}.
+     * Whitelist defaults to only Blocks.AIR. Blacklist defaults to empty.
      */
-    public static CuboidCategory cuboidCategorize(World worldIn, BlockPos pos)
+    public static <T extends Block> int countRecognizedNeighborAxes(World worldIn, BlockPos pos)
     {
-       // Idea: make a helper class which contains a boolean and a CuboidCategory to package the return of this method.
-       // That way, you get a boolean for whether or not it's legal rather than having to check explicitly if the
-       // cuboid category is illegal.
-
-       // FIXME for now we'll just assume that any non-air block is a neighbor.
-
-       // 3 neighbors means (6 - 3) face sharing air blocks
-       if(countAirNeighbors(worldIn, pos) == 3) {
-           // TODO check the lip-corner clause
-
-           if (countAirAxes(worldIn, pos) == 0) {
-               return CuboidCategory.CORNER;
-           }
-           else if(countAirAxes(worldIn, pos) == 1){
-               return CuboidCategory.LIP;
-           }
-           else {
-               return CuboidCategory.ILLEGAL;
-           }
-
-       }
-       // 4 neighbors means (6 - 4) face sharing air blocks
-       else if(countAirNeighbors(worldIn, pos) == 2)
-       {
-           if (countAirAxes(worldIn, pos) == 0) {
-               return CuboidCategory.EDGE;
-           }
-           else if(countAirAxes(worldIn, pos) == 1) {
-               return CuboidCategory.FACE;
-           }
-           else {
-               return CuboidCategory.ILLEGAL;
-           }
-       }
-       else{
-           return CuboidCategory.ILLEGAL;
-       }
+        Collection<Block> whitelist = new HashSet<>(), blacklist = new HashSet<>();
+        whitelist.add(Blocks.AIR);
+        return countRecognizedNeighborAxes(worldIn, pos, whitelist, blacklist);
     }
 
     /**
-     * For a given block, returns the number of axes for which the neighbors consist only of air.
+     * For a given block, returns the number of axes which contain at least one recognized neighbor.
      * @param worldIn the world of the block
      * @param pos the position of the block
      */
-    public static int countAirAxes(World worldIn, BlockPos pos) {
+    public static <T extends Block> int countRecognizedNeighborAxes(World worldIn, BlockPos pos, Collection<T> whitelist, Collection<T> blacklist) {
 
-        // It would also be nice if you told me which axes were air
+        // It would also be nice if you told me which axes contained no recognized neighbors
         int count = 0;
         Map<Direction, Block> neighbors = Util.getNeighbors(worldIn, pos);
-        if (neighbors.get(Direction.EAST) == Blocks.AIR && neighbors.get(Direction.WEST) == Blocks.AIR){
+        if (!whitelist.contains(neighbors.get(Direction.EAST)) || !whitelist.contains(neighbors.get(Direction.WEST))){
             count++;
         }
-        if (neighbors.get(Direction.NORTH) == Blocks.AIR && neighbors.get(Direction.SOUTH) == Blocks.AIR){
+        if (!whitelist.contains(neighbors.get(Direction.NORTH)) || !whitelist.contains(neighbors.get(Direction.SOUTH))){
             count++;
         }
-        if (neighbors.get(Direction.UP) == Blocks.AIR && neighbors.get(Direction.DOWN) == Blocks.AIR){
+        if (!whitelist.contains(neighbors.get(Direction.UP)) || !whitelist.contains(neighbors.get(Direction.DOWN))){
             count++;
         }
         return count;
     }
 
     /**
-     * Counts the number of neighbors which are minecraft:air
+     * Convenience overload for {@link #countRecognizedNeighbors(World, BlockPos, Collection, Collection)}.
+     * Whitelist defaults to only Blocks.AIR. Blacklist defaults to empty.
+     */
+    public static <T extends Block> int countRecognizedNeighbors(World worldIn, BlockPos pos)
+    {
+        Collection<Block> whitelist = new HashSet<>(), blacklist = new HashSet<>();
+        whitelist.add(Blocks.AIR);
+        return countRecognizedNeighbors(worldIn, pos, whitelist, blacklist);
+    }
+    /**
+     * Counts the number of neighbors which are recognized according to the whitelist and blacklist.
      * @param worldIn the world of the block
      * @param pos the position of the block
      */
-    public static int countAirNeighbors(World worldIn, BlockPos pos)
+    public static <T extends Block> int countRecognizedNeighbors(World worldIn, BlockPos pos, Collection<T> whitelist, @Nullable Collection<T> blacklist)
     {
         int count = 0;
         Map<Direction, Block> neighbors = Util.getNeighbors(worldIn, pos);
         for(Direction d : neighbors.keySet()) {
-            if(neighbors.get(d) == Blocks.AIR)
+            if(!whitelist.contains(neighbors.get(d)))
                 count++;
         }
         return count;
     }
 
+    /**
+     * A block can be one of these categories in a cuboid structure.
+     */
+    public enum CuboidCategory {
+        CORNER, LIP, EDGE, FACE, ILLEGAL;
+
+        /**
+         * Convenience overload for {@link #categorize(World, BlockPos, Collection, Collection)}.
+         * Whitelist defaults to only Blocks.AIR. Blacklist defaults to empty.
+         */
+        public static CuboidCategory categorize(World worldIn, BlockPos pos)
+        {
+            Collection<Block> whitelist = new HashSet<>(), blacklist = new HashSet<>();
+            whitelist.add(Blocks.AIR);
+            return categorize(worldIn, pos, whitelist, blacklist);
+        }
+        /**
+         * Returns the cuboid category of the specified block. Used in ensuring a block is part of a cuboid multiblock structure.
+         *
+         * @param worldIn the world of the block
+         * @param pos the position of the block
+         * @param whitelist blocks which are recognized as neighbors
+         * @param blacklist blocks which are not recognized as neighbors
+         * @return the CuboidCategory of the block.
+         */
+        public static <T extends Block> CuboidCategory categorize(World worldIn, BlockPos pos, Collection<T> whitelist, Collection<T> blacklist)
+        {
+            // FIXME behavior is undefined when whitelist and blacklist overlap
+            // TODO implement use of whitelist and blacklist
+
+            // Idea: make a helper class which contains a boolean and a CuboidCategory to package the return of this method.
+            // That way, you get a boolean for whether or not it's legal rather than having to check explicitly if the
+            // cuboid category is illegal.
+
+            // FIXME for now we'll say any block on the whitelist is a neighbor.
+
+            // 3 neighbors means (6 - 3) face sharing air blocks
+            if(countRecognizedNeighbors(worldIn, pos, whitelist, blacklist) == 3) {
+                // TODO check the lip-corner clause
+
+                if (countRecognizedNeighborAxes(worldIn, pos, whitelist, blacklist) == 3) {
+                    return CuboidCategory.CORNER;
+                }
+                else if(countRecognizedNeighborAxes(worldIn, pos, whitelist, blacklist) == 2){
+                    return CuboidCategory.LIP;
+                }
+                else {
+                    return CuboidCategory.ILLEGAL;
+                }
+
+            }
+            // 4 neighbors means (6 - 4) face sharing air blocks
+            else if(countRecognizedNeighbors(worldIn, pos, whitelist, blacklist) == 4)
+            {
+                if (countRecognizedNeighborAxes(worldIn, pos, whitelist, blacklist) == 3) {
+                    return CuboidCategory.EDGE;
+                }
+                else if(countRecognizedNeighborAxes(worldIn, pos, whitelist, blacklist) == 2) {
+                    return CuboidCategory.FACE;
+                }
+                else {
+                    return CuboidCategory.ILLEGAL;
+                }
+            }
+            else{
+                return CuboidCategory.ILLEGAL;
+            }
+        }
+    }
 }

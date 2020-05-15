@@ -2,11 +2,9 @@ package crystallography.block;
 
 import crystallography.libs.Util;
 import crystallography.libs.multiblock.MultiBlockComponent;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -36,7 +34,9 @@ public class TestBlock extends MultiBlockComponent {
         this.worldIn = worldIn;
         thisPos = pos;
         if(!worldIn.isRemote) {
-            LOGGER.info("Cuboid category: " + Util.cuboidCategorize(worldIn, pos));
+            LOGGER.info("I have " + Util.countRecognizedNeighbors(worldIn, pos) + " recognized neighbors");
+            LOGGER.info("I have " + Util.countRecognizedNeighborAxes(worldIn, pos) + " axes containing at least one recognized neighbors");
+            LOGGER.info("Cuboid category: " + Util.CuboidCategory.categorize(worldIn, pos));
         }
         return ActionResultType.SUCCESS;
     }
@@ -44,7 +44,7 @@ public class TestBlock extends MultiBlockComponent {
     @Override
     public boolean isValid() {
         // return true if this block is a valid cuboid category
-        Util.CuboidCategory result = Util.cuboidCategorize(worldIn, thisPos);
+        Util.CuboidCategory result = Util.CuboidCategory.categorize(worldIn, thisPos);
         if (result.equals(Util.CuboidCategory.ILLEGAL)) {
             return false;
         }
