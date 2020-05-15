@@ -6,7 +6,7 @@ import java.util.Set;
  * Controller blocks exist as components of a multiblock and serve as the overseer or master. Logic which applies to the
  * entire multiblock structure should be handled by the ControllerBlock.
  *
- * Only one controllerBlock is allowed per multiblock structure.
+ * Exactly one controllerBlock is allowed per multiblock structure.
  */
 public abstract class ControllerBlock extends MultiBlockComponent {
 
@@ -19,8 +19,11 @@ public abstract class ControllerBlock extends MultiBlockComponent {
         super(properties);
     }
 
-    // Only one controllerBlock is allowed per multiblock structure.
-    public boolean isValid(/*Set<MultiBlockComponent> notMyStructure*/)
+    /*
+     * Exactly one controllerBlock is allowed per multiblock structure.
+     *
+      */
+    public boolean isValid()
     {
         for(MultiBlockComponent comp : structure)
         {
@@ -30,6 +33,6 @@ public abstract class ControllerBlock extends MultiBlockComponent {
         structure.add(this);
         return imValid(this, structure);
     }
-    // ControllerBlock will start the algorithm
+    // ControllerBlock will start the algorithm initially, but any MultiBlockComponent should be able to do so.
 
 }
