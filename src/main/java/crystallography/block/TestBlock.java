@@ -1,7 +1,9 @@
 package crystallography.block;
 
+import crystallography.init.ModBlocks;
 import crystallography.libs.Util;
 import crystallography.libs.multiblock.MultiBlockComponent;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResultType;
@@ -11,6 +13,9 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * Used to make experimental changes to blocks. Mostly for figuring out how to do things.
@@ -36,7 +41,9 @@ public class TestBlock extends MultiBlockComponent {
         if(!worldIn.isRemote) {
             LOGGER.info("I have " + Util.countRecognizedNeighbors(worldIn, pos) + " recognized neighbors");
             LOGGER.info("I have " + Util.countRecognizedNeighborAxes(worldIn, pos) + " axes containing at least one recognized neighbors");
-            LOGGER.info("Cuboid category: " + Util.CuboidCategory.categorize(worldIn, pos));
+            Collection<Block> whitelist = new HashSet<>(), blacklist = new HashSet<>();
+            whitelist.add(ModBlocks.VAT_COMPONENT_STRUCTURAL_T1.get());
+            LOGGER.info("Cuboid category: " + Util.CuboidCategory.categorize(worldIn, pos, whitelist, blacklist));
         }
         return ActionResultType.SUCCESS;
     }
