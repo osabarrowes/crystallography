@@ -36,10 +36,7 @@ public class TestBlock extends MultiBlockComponent {
         this.worldIn = worldIn;
         thisPos = pos;
         if(!worldIn.isRemote) {
-
-            LOGGER.info("I have " + Util.countAirNeighbors(worldIn, pos) + " air neighbors.");
-            LOGGER.info("I have " + Util.countAirAxes(worldIn, pos) + " air axes.");
-            //LOGGER.info("Validity check: " + isValid());
+            LOGGER.info("Cuboid category: " + Util.cuboidCategorize(worldIn, pos));
         }
         return ActionResultType.SUCCESS;
     }
