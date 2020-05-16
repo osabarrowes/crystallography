@@ -61,6 +61,13 @@ public class Util {
      */
     public static <T extends Block> int countRecognizedNeighborAxes(World worldIn, BlockPos pos, Collection<T> whitelist, Collection<T> blacklist) {
 
+        Collection<T> intersection = new HashSet<>(whitelist);
+        intersection.retainAll(blacklist);
+        if (!intersection.isEmpty())
+        {
+            throw new IllegalArgumentException("Blocks cannot be on both the whitelist and the blacklist.");
+        }
+
         // It would also be nice if you told me which axes contained no recognized neighbors
         int count = 0;
         Map<Direction, Block> neighbors = Util.getNeighbors(worldIn, pos);
