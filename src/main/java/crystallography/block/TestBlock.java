@@ -39,11 +39,9 @@ public class TestBlock extends MultiBlockComponent {
         this.worldIn = worldIn;
         thisPos = pos;
         if(!worldIn.isRemote) {
-            LOGGER.info("I have " + Util.countRecognizedNeighbors(worldIn, pos) + " recognized neighbors");
-            LOGGER.info("I have " + Util.countRecognizedNeighborAxes(worldIn, pos) + " axes containing at least one recognized neighbors");
-            Collection<Block> whitelist = new HashSet<>(), blacklist = new HashSet<>();
-            whitelist.add(ModBlocks.VAT_COMPONENT_STRUCTURAL_T1.get());
-            LOGGER.info("Cuboid category: " + Util.CuboidCategory.categorize(worldIn, pos, whitelist, blacklist));
+            LOGGER.info("I have " + countRecognizedNeighbors(worldIn, pos) + " recognized neighbors");
+            LOGGER.info("I have " + countRecognizedNeighborAxes(worldIn, pos) + " axes containing at least one recognized neighbors");
+            LOGGER.info("Cuboid category: " + CuboidCategory.categorize(worldIn, pos));
         }
         return ActionResultType.SUCCESS;
     }
@@ -51,8 +49,8 @@ public class TestBlock extends MultiBlockComponent {
     @Override
     public boolean isValid() {
         // return true if this block is a valid cuboid category
-        Util.CuboidCategory result = Util.CuboidCategory.categorize(worldIn, thisPos);
-        if (result.equals(Util.CuboidCategory.ILLEGAL)) {
+        CuboidCategory result = CuboidCategory.categorize(worldIn, thisPos);
+        if (result.equals(CuboidCategory.ILLEGAL)) {
             return false;
         }
         return true;
