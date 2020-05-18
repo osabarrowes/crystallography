@@ -61,6 +61,7 @@ public abstract class MultiBlockComponent extends Block{
         //if it is valid.
         //
         Set<MultiBlockComponent> neighborhood = new HashSet<>(); // TODO get all blocks which share a face with this block, put them in this set
+        //FIXME getNeighbors provides what we want here, but requires a world and a blockpos. See issue https://github.com/xenonni/crystallography/issues/4#issue-619867435
         for(MultiBlockComponent neighbor : neighborhood)
         {
             // only visit neighbors that are not in structure
