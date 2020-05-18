@@ -147,23 +147,22 @@ public abstract class MultiBlockComponent extends Block{
          */
         public static <T extends Block> CuboidCategory categorize(World worldIn, BlockPos pos, Collection<T> whitelist, Collection<T> blacklist)
         {
-            // FIXME behavior is undefined when whitelist and blacklist overlap
-            // TODO implement use of whitelist and blacklist
-
             // Idea: make a helper class which contains a boolean and a CuboidCategory to package the return of this method.
             // That way, you get a boolean for whether or not it's legal rather than having to check explicitly if the
             // cuboid category is illegal.
+            // I don't know if this is a good idea but it's an idea
 
-            // FIXME for now we'll say any block on the whitelist is a neighbor.
-
-            // 3 neighbors means (6 - 3) face sharing air blocks
             if(countRecognizedNeighbors(worldIn, pos) == 3) {
-                // TODO check the lip-corner clause
 
                 if (countRecognizedNeighborAxes(worldIn, pos) == 3) {
                     return CuboidCategory.CORNER;
                 }
                 else if(countRecognizedNeighborAxes(worldIn, pos) == 2){
+                    // maybe a lip. Let's see.
+                    if(Util.getNeighbors(worldIn, pos).get(Direction.UP) instanceof MultiBlockComponent || !(Util.getNeighbors(worldIn, pos).get(Direction.DOWN) instanceof MultiBlockComponent))
+                    {
+                        return CuboidCategory.ILLEGAL; // Lips cannot have MultiBlockComponents above them, and they must have one beneath them.
+                    }
                     return CuboidCategory.LIP;
                 }
                 else {

@@ -42,6 +42,7 @@ public class TestBlock extends MultiBlockComponent {
             LOGGER.info("I have " + countRecognizedNeighbors(worldIn, pos) + " recognized neighbors");
             LOGGER.info("I have " + countRecognizedNeighborAxes(worldIn, pos) + " axes containing at least one recognized neighbors");
             LOGGER.info("Cuboid category: " + CuboidCategory.categorize(worldIn, pos));
+            LOGGER.info(isValid());
         }
         return ActionResultType.SUCCESS;
     }
