@@ -5,7 +5,12 @@ import crystallography.libs.Util;
 import crystallography.libs.multiblock.MultiBlockComponent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalBlock;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.IProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -33,6 +38,9 @@ public class TestBlock extends MultiBlockComponent {
     // The position of this block. this is also here for isValid
     private BlockPos thisPos;
 
+    public static final BooleanProperty VALID = BooleanProperty.create("valid");
+
+
     @Override
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
     {
@@ -42,9 +50,31 @@ public class TestBlock extends MultiBlockComponent {
             LOGGER.info("I have " + countRecognizedNeighbors(worldIn, pos) + " recognized neighbors");
             LOGGER.info("I have " + countRecognizedNeighborAxes(worldIn, pos) + " axes containing at least one recognized neighbors");
             LOGGER.info("Cuboid category: " + CuboidCategory.categorize(worldIn, pos));
-            LOGGER.info(isValid());
+            LOGGER.info("Valid: " + isValid());
+            final BlockState newState;
+            if(isValid())
+            {
+                newState = worldIn.getBlockState(pos).with(VALID, true);
+            }
+            else
+            {
+                newState = worldIn.getBlockState(pos).with(VALID, false);
+            }
+            // Flag 2: send the change to clients
+            worldIn.setBlockState(pos, newState, 2);
         }
         return ActionResultType.SUCCESS;
+    }
+
+    @Override
+    protected void fillStateContainer(final StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(VALID);
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        return this.getDefaultState().with(VALID, false);
     }
 
     @Override

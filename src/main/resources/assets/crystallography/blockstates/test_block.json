@@ -1,7 +1,6 @@
 {
   "variants": {
-    "": {
-      "model": "crystallography:block/test_block"
-    }
+    "valid=false": { "model": "crystallography:block/test_block" },
+    "valid=true": { "model": "crystallography:block/test_block_validated" }
   }
 }
