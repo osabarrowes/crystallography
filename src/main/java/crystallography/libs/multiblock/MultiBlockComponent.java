@@ -1,14 +1,13 @@
 package crystallography.libs.multiblock;
 
+import crystallography.block.TestBlock;
 import crystallography.libs.Util;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -60,25 +59,31 @@ public abstract class MultiBlockComponent extends Block{
         //for each neighbor if neighbor is a multiblock component ask neighbor
         //if it is valid.
         //
-        Set<MultiBlockComponent> neighborhood = new HashSet<>(); // TODO get all blocks which share a face with this block, put them in this set
+        Collection<Block> neighborhood = new HashSet<>(); // TODO get all blocks which share a face with this block, put them in this set
         //FIXME getNeighbors provides what we want here, but requires a world and a blockpos. See issue https://github.com/xenonni/crystallography/issues/4#issue-619867435
-        for(MultiBlockComponent neighbor : neighborhood)
+        if(blockThatAsked instanceof TestBlock)
         {
-            // only visit neighbors that are not in structure
-            if (structure.contains(neighbor))
+            // casting is done here for debug purposes
+            Map<Direction, Block> neighbors = Util.getNeighbors( ((TestBlock) blockThatAsked).getWorldIn(), ((TestBlock) blockThatAsked).getPos());
+            neighborhood = neighbors.values();
+        }
+        for(Block neighbor : neighborhood)
+        {
+            if(neighbor instanceof MultiBlockComponent)
             {
-                continue;
-            }
+                // only visit neighbors that are not in structure
+                if (structure.contains(neighbor)) {
+                    continue;
+                }
 
-            // don't visit the block who asked
-            if(neighbor.equals(blockThatAsked))
-            {
-                continue;
-            }
+                // don't visit the block who asked
+                if (neighbor.equals(blockThatAsked)) {
+                    continue;
+                }
 
-            if (neighbor.imValid(this, structure) == false)
-            {
-                return false;
+                if (((MultiBlockComponent) neighbor).imValid(this, structure) == false) {
+                    return false;
+                }
             }
         }
         return true;
