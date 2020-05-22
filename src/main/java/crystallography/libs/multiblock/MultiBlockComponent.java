@@ -61,9 +61,8 @@ public abstract class MultiBlockComponent extends Block{
         //
         Collection<Block> neighborhood = new HashSet<>(); // TODO get all blocks which share a face with this block, put them in this set
         //FIXME getNeighbors provides what we want here, but requires a world and a blockpos. See issue https://github.com/xenonni/crystallography/issues/4#issue-619867435
-        if(blockThatAsked instanceof TestBlock)
+        if(blockThatAsked instanceof TestBlock) // DEBUG
         {
-            // casting is done here for debug purposes
             Map<Direction, Block> neighbors = Util.getNeighbors( ((TestBlock) blockThatAsked).getWorldIn(), ((TestBlock) blockThatAsked).getPos());
             neighborhood = neighbors.values();
         }
@@ -71,19 +70,27 @@ public abstract class MultiBlockComponent extends Block{
         {
             if(neighbor instanceof MultiBlockComponent)
             {
+
                 // only visit neighbors that are not in structure
                 if (structure.contains(neighbor)) {
                     continue;
                 }
 
+                // FIXME Don't use Block for determining block equivalence
                 // don't visit the block who asked
-                if (neighbor.equals(blockThatAsked)) {
-                    continue;
+                if (neighbor instanceof TestBlock) { // DEBUG
+                    if ( ((TestBlock) neighbor).getWorldIn().getBlockState( ((TestBlock) neighbor).getPos() ).get(TestBlock.VALID) ) // don't visit the blocks which are valid
+                    {
+                        LOGGER.info("Visited block " + neighbor + " , state was " + ((TestBlock) neighbor).getWorldIn().getBlockState( ((TestBlock) neighbor).getPos() ).get(TestBlock.VALID));
+                        continue;
+                    }
+
                 }
 
                 if (((MultiBlockComponent) neighbor).imValid(this, structure) == false) {
                     return false;
                 }
+
             }
         }
         return true;
