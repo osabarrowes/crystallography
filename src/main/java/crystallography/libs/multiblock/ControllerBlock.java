@@ -1,5 +1,8 @@
 package crystallography.libs.multiblock;
 
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
 import java.util.Set;
 
 /**
@@ -13,7 +16,7 @@ public abstract class ControllerBlock extends MultiBlockComponent {
     // A list containing all the multiblocks in this structure.
     // CLEANME We do this because recursion. If a block is in the set already, then it has already been visited. No additional visitation is required.
     // TODO ensure only valid IMultiBlockComponents are contained in this list.
-    private Set<MultiBlockComponent> structure;
+    private Set<BlockPos> structure;
 
     public ControllerBlock(Properties properties) {
         super(properties);
@@ -23,15 +26,17 @@ public abstract class ControllerBlock extends MultiBlockComponent {
      * Exactly one controllerBlock is allowed per multiblock structure.
      *
       */
-    public boolean isValid()
+    @Override
+    public boolean isValid(World worldIn, BlockPos pos)
     {
-        for(MultiBlockComponent comp : structure)
+        for(BlockPos comp : structure)
         {
-            if(comp instanceof ControllerBlock)
+            if(worldIn.getBlockState(comp).getBlock() instanceof ControllerBlock)
                 return false;
         }
-        structure.add(this);
-        return imValid(this, structure);
+        structure.add(pos);
+        // return imValid(worldIn, pos, structure); // FIXME
+        return true;
     }
     // ControllerBlock will start the algorithm initially, but any MultiBlockComponent should be able to do so.
 

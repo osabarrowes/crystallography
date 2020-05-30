@@ -32,59 +32,56 @@ public abstract class MultiBlockComponent extends Block{
     /**
      * Returns true if this block's specific logic is satisfied && neighboring MultiBlockComponents are valid
      *
-     * The first block that starts the algorithm passes 'this' as the parameter.
+     *
      * @return
      */
-    public boolean imValid(World worldIn, BlockPos pos,  Set<MultiBlockComponent> structure) {
+    public boolean imValid(World worldIn, BlockPos centerPos, BlockPos askingPos, Set<BlockPos> structure) {
 
-        if(isNeighborsValid(worldIn, pos, structure) == false) {
+        if(isNeighborsValid(worldIn, centerPos, askingPos, structure) == false) {
             return  false;
         }
 
-        if (isValid(worldIn, pos) == false) {
+        if (isValid(worldIn, centerPos) == false) {
             return false;
         }
 
-        structure.add(this);
+        structure.add(centerPos);
         return true;
     }
 
     /**
      * Returns true if all the neighbors report they are valid.
      * @param structure
+     * @param centerPos the block whose neighbors are being queried.
+     * @param askingPos the block which asked the block at centerPos if it was valid.
      * @return
      */
-    public boolean isNeighborsValid (World worldIn, BlockPos pos,  Set<BlockPos> structure) {
+    public boolean isNeighborsValid (World worldIn, BlockPos centerPos, BlockPos askingPos, Set<BlockPos> structure) {
         //for each neighbor if neighbor is a multiblock component ask neighbor
         //if it is valid.
         //
-        Collection<Block> neighborhood = new HashSet<>(); // TODO get all blocks which share a face with this block, put them in this set
+         Collection<Block> neighborhood = new HashSet<>(); // TODO get all blocks which share a face with this block, put them in this set
         //FIXME getNeighbors provides what we want here, but requires a world and a blockpos. See issue https://github.com/xenonni/crystallography/issues/4#issue-619867435
 
-        Map<Direction, Block> neighbors = Util.getNeighbors( worldIn, pos);
+        Map<Direction, Block> neighbors = Util.getNeighbors( worldIn, centerPos);
         neighborhood = neighbors.values();
 
-        for(Block neighbor : neighborhood)
+        for(Direction direction : neighbors.keySet())
         {
-            if(neighbor instanceof MultiBlockComponent)
+            if(neighbors.get(direction) instanceof MultiBlockComponent)
             {
-
                 // only visit neighbors that are not in structure
-                if (structure.contains(neighbor)) {
+                if (structure.contains(centerPos.offset(direction))) {
                     continue;
                 }
 
                 // don't visit the block who asked
-                if (neighbor instanceof TestBlock) { // DEBUG
-//                    if ( ((TestBlock) neighbor).getWorldIn().getBlockState( ((TestBlock) neighbor).getPos() ).get(TestBlock.VALID) ) // don't visit the blocks which are valid
-//                    {
-//                        LOGGER.info("Visited block " + neighbor + " , state was " + ((TestBlock) neighbor).getWorldIn().getBlockState( ((TestBlock) neighbor).getPos() ));
-//                        continue;
-//                    }
-
+                if (centerPos.offset(direction).equals(askingPos)) {
+                    continue;
                 }
 
-                if (((MultiBlockComponent) neighbor).imValid(worldIn, pos, structure) == false) { // check the parameters here are being recursive correctly
+                MultiBlockComponent mbc = (MultiBlockComponent) (worldIn.getBlockState(centerPos.offset(direction)).getBlock());
+                if (mbc.imValid(worldIn, centerPos.offset(direction), centerPos, structure) == false) {
                     return false;
                 }
 

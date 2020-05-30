@@ -47,10 +47,10 @@ public class TestBlock extends MultiBlockComponent {
             LOGGER.info("I have " + countRecognizedNeighbors(worldIn, pos) + " recognized neighbors");
             LOGGER.info("I have " + countRecognizedNeighborAxes(worldIn, pos) + " axes containing at least one recognized neighbors");
             LOGGER.info("Cuboid category: " + CuboidCategory.categorize(worldIn, pos));
-            LOGGER.info("Valid: " + isValid(worldIn, pos));
+            // LOGGER.info("Valid: " + isValid(worldIn, pos));
 
-            Set<MultiBlockComponent> structure = new HashSet<>();
-            imValid(worldIn, pos, structure);
+            Set<BlockPos> structure = new HashSet<>();
+            imValid(worldIn, pos, pos, structure);
         }
         return ActionResultType.SUCCESS;
     }
