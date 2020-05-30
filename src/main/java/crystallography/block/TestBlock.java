@@ -36,11 +36,6 @@ public class TestBlock extends MultiBlockComponent {
         super(properties);
     }
 
-    // The world this block exists in. This is here because I want to check neighbors for isValid without changing it's method signature.
-    private World worldIn;
-    // The position of this block. this is also here for isValid
-    private BlockPos thisPos;
-
     // IProperties are used in the construction of BlockStates (not to be confused with .json files)
     public static final BooleanProperty VALID = BooleanProperty.create("valid");
 
@@ -48,18 +43,14 @@ public class TestBlock extends MultiBlockComponent {
     @Override
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
     {
-        this.worldIn = worldIn;
-        thisPos = pos;
         if(!worldIn.isRemote) {
             LOGGER.info("I have " + countRecognizedNeighbors(worldIn, pos) + " recognized neighbors");
             LOGGER.info("I have " + countRecognizedNeighborAxes(worldIn, pos) + " axes containing at least one recognized neighbors");
             LOGGER.info("Cuboid category: " + CuboidCategory.categorize(worldIn, pos));
-            LOGGER.info("Valid: " + isValid());
+            LOGGER.info("Valid: " + isValid(worldIn, pos));
 
             Set<MultiBlockComponent> structure = new HashSet<>();
-            imValid(this, structure);
-
-
+            imValid(worldIn, pos, structure);
         }
         return ActionResultType.SUCCESS;
     }
@@ -78,28 +69,25 @@ public class TestBlock extends MultiBlockComponent {
     }
 
     @Override
-    public boolean isValid() {
+    public boolean isValid(World worldIn, BlockPos pos) {
         // also updates the IProperty, which changes the blockstate
-        CuboidCategory result = CuboidCategory.categorize(worldIn, thisPos);
+        CuboidCategory result = CuboidCategory.categorize(worldIn, pos);
         boolean returnVal;
         final BlockState newState;
         if (result.equals(CuboidCategory.ILLEGAL)) {
-            newState = worldIn.getBlockState(thisPos).with(VALID, false);
+            newState = worldIn.getBlockState(pos).with(VALID, false);
             returnVal = false;
         }
         else
         {
             // return true if this block is a legal cuboid category
-            newState = worldIn.getBlockState(thisPos).with(VALID, true);
+            newState = worldIn.getBlockState(pos).with(VALID, true);
             returnVal = true;
         }
         // Flag 2: send the change to clients
-        worldIn.setBlockState(thisPos, newState, 2);
+        worldIn.setBlockState(pos, newState, 2);
 
         return returnVal;
 
     }
-
-    public World getWorldIn() { return worldIn; }
-    public BlockPos getPos() { return thisPos; }
 }
