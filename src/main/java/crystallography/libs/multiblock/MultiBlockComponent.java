@@ -37,6 +37,8 @@ public abstract class MultiBlockComponent extends Block{
      */
     public boolean imValid(World worldIn, BlockPos centerPos, BlockPos askingPos, Set<BlockPos> structure) {
 
+        structure.add(centerPos); // if the structure is invalid at any point during the algorithm, we will throw structure away
+
         if(isNeighborsValid(worldIn, centerPos, askingPos, structure) == false) {
             return  false;
         }
@@ -45,7 +47,6 @@ public abstract class MultiBlockComponent extends Block{
             return false;
         }
 
-        structure.add(centerPos);
         return true;
     }
 
@@ -70,13 +71,8 @@ public abstract class MultiBlockComponent extends Block{
         {
             if(neighbors.get(direction) instanceof MultiBlockComponent)
             {
-                // only visit neighbors that are not in structure
+                // only visit neighbors that are not in structure. blocks in structure have already asked for validity
                 if (structure.contains(centerPos.offset(direction))) {
-                    continue;
-                }
-
-                // don't visit the block who asked
-                if (centerPos.offset(direction).equals(askingPos)) {
                     continue;
                 }
 
