@@ -50,7 +50,7 @@ public class TestBlock extends MultiBlockComponent {
             // LOGGER.info("Valid: " + isValid(worldIn, pos));
 
             Set<BlockPos> structure = new HashSet<>();
-            imValid(worldIn, pos, pos, structure);
+            imValid(worldIn, pos, structure);
         }
         return ActionResultType.SUCCESS;
     }

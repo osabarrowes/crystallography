@@ -35,11 +35,11 @@ public abstract class MultiBlockComponent extends Block{
      *
      * @return
      */
-    public boolean imValid(World worldIn, BlockPos centerPos, BlockPos askingPos, Set<BlockPos> structure) {
+    public boolean imValid(World worldIn, BlockPos centerPos, Set<BlockPos> structure) {
 
         structure.add(centerPos); // if the structure is invalid at any point during the algorithm, we will throw structure away
 
-        if(isNeighborsValid(worldIn, centerPos, askingPos, structure) == false) {
+        if(isNeighborsValid(worldIn, centerPos, structure) == false) {
             return  false;
         }
 
@@ -52,20 +52,14 @@ public abstract class MultiBlockComponent extends Block{
 
     /**
      * Returns true if all the neighbors report they are valid.
-     * @param structure
+     * @param structure all the blocks which have been queried for this multiblock validation.
      * @param centerPos the block whose neighbors are being queried.
-     * @param askingPos the block which asked the block at centerPos if it was valid.
      * @return
      */
-    public boolean isNeighborsValid (World worldIn, BlockPos centerPos, BlockPos askingPos, Set<BlockPos> structure) {
+    public boolean isNeighborsValid (World worldIn, BlockPos centerPos, Set<BlockPos> structure) {
         //for each neighbor if neighbor is a multiblock component ask neighbor
         //if it is valid.
-        //
-         Collection<Block> neighborhood = new HashSet<>(); // TODO get all blocks which share a face with this block, put them in this set
-        //FIXME getNeighbors provides what we want here, but requires a world and a blockpos. See issue https://github.com/xenonni/crystallography/issues/4#issue-619867435
-
         Map<Direction, Block> neighbors = Util.getNeighbors( worldIn, centerPos);
-        neighborhood = neighbors.values();
 
         for(Direction direction : neighbors.keySet())
         {
@@ -77,7 +71,7 @@ public abstract class MultiBlockComponent extends Block{
                 }
 
                 MultiBlockComponent mbc = (MultiBlockComponent) (worldIn.getBlockState(centerPos.offset(direction)).getBlock());
-                if (mbc.imValid(worldIn, centerPos.offset(direction), centerPos, structure) == false) {
+                if (mbc.imValid(worldIn, centerPos.offset(direction), structure) == false) {
                     return false;
                 }
 
@@ -92,7 +86,6 @@ public abstract class MultiBlockComponent extends Block{
      * @param pos the position of the block which has neighbors
      */
     public static <T extends Block> int countRecognizedNeighborAxes(World worldIn, BlockPos pos) {
-        // It would also be nice if you told me which axes contained no MultiBlockComponents
         int count = 0;
         Map<Direction, Block> neighbors = Util.getNeighbors(worldIn, pos);
         if (neighbors.get(Direction.EAST) instanceof MultiBlockComponent || neighbors.get(Direction.WEST) instanceof MultiBlockComponent){
@@ -150,11 +143,6 @@ public abstract class MultiBlockComponent extends Block{
          */
         public static <T extends Block> CuboidCategory categorize(World worldIn, BlockPos pos, Collection<T> whitelist, Collection<T> blacklist)
         {
-            // Idea: make a helper class which contains a boolean and a CuboidCategory to package the return of this method.
-            // That way, you get a boolean for whether or not it's legal rather than having to check explicitly if the
-            // cuboid category is illegal.
-            // I don't know if this is a good idea but it's an idea
-
             if(countRecognizedNeighbors(worldIn, pos) == 3) {
 
                 if (countRecognizedNeighborAxes(worldIn, pos) == 3) {
