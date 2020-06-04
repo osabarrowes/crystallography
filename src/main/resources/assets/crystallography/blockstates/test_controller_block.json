@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "valid=false": { "model": "crystallography:block/test_controller_block" },
+    "valid=true": { "model": "crystallography:block/test_controller_block_validated" }
+  }
+}

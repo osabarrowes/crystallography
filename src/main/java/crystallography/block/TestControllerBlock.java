@@ -50,6 +50,6 @@ public class TestControllerBlock extends ControllerBlock {
         // Flag 2: send the change to clients
         worldIn.setBlockState(pos, newState, 2);
 
-        return newState.get(VALID) && super.isValid(worldIn, pos);
+        return newState.get(VALID) && super.isValid(worldIn, pos, structure);
     }
 }
