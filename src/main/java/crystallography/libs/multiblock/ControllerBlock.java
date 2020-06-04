@@ -9,7 +9,7 @@ import java.util.Set;
  * Controller blocks exist as components of a multiblock and serve as the overseer or master. Logic which applies to the
  * entire multiblock structure should be handled by the ControllerBlock.
  *
- * Exactly one controllerBlock is allowed per multiblock structure.
+ * Exactly one controllerBlock is required per multiblock structure.
  */
 public abstract class ControllerBlock extends MultiBlockComponent {
 
@@ -22,22 +22,28 @@ public abstract class ControllerBlock extends MultiBlockComponent {
         super(properties);
     }
 
-    /*
-     * Exactly one controllerBlock is allowed per multiblock structure.
-     *
-      */
     @Override
     public boolean isValid(World worldIn, BlockPos pos)
     {
+        int controllerCount = 0;
+        int cornerCount = 0;
         for(BlockPos comp : structure)
         {
             if(worldIn.getBlockState(comp).getBlock() instanceof ControllerBlock)
-                return false;
+            {
+                controllerCount++;
+            }
+
+            if(CuboidCategory.categorize(worldIn, comp).equals(CuboidCategory.CORNER))
+            {
+                cornerCount++;
+            }
         }
-        structure.add(pos);
-        // return imValid(worldIn, pos, structure); // FIXME
+
+        if(controllerCount != 1 || cornerCount != 8) {
+            return false;
+        }
+
         return true;
     }
-    // ControllerBlock will start the algorithm initially, but any MultiBlockComponent should be able to do so.
-
 }
