@@ -1,6 +1,5 @@
 package crystallography.libs.multiblock;
 
-import crystallography.block.TestBlock;
 import crystallography.libs.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -36,8 +35,9 @@ public abstract class MultiBlockComponent extends Block{
      * @return
      */
     public boolean imValid(World worldIn, BlockPos centerPos, Set<BlockPos> structure) {
-
-        structure.add(centerPos); // if the structure is invalid at any point during the algorithm, we will throw structure away
+        // structure contains all the visited blocks. if all visited blocks are valid, then the structure is valid.
+        // if the structure is invalid at any point during the algorithm, we should throw structure away
+        structure.add(centerPos);
 
         if(isNeighborsValid(worldIn, centerPos, structure) == false) {
             return  false;

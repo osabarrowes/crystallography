@@ -1,27 +1,19 @@
 package crystallography.block;
 
-import crystallography.init.ModBlocks;
-import crystallography.libs.Util;
 import crystallography.libs.multiblock.MultiBlockComponent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.IProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,15 +36,11 @@ public class TestBlock extends MultiBlockComponent {
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
     {
         if(!worldIn.isRemote) {
-            LOGGER.info("I have " + countRecognizedNeighbors(worldIn, pos) + " recognized neighbors");
-            LOGGER.info("I have " + countRecognizedNeighborAxes(worldIn, pos) + " axes containing at least one recognized neighbors");
             LOGGER.info("Cuboid category: " + CuboidCategory.categorize(worldIn, pos));
-            // LOGGER.info("Valid: " + isValid(worldIn, pos));
-
             Set<BlockPos> structure = new HashSet<>();
             imValid(worldIn, pos, structure);
         }
-        return ActionResultType.SUCCESS;
+        return ActionResultType.SUCCESS; // imValid can help determine what the return type should be, but I don't know how return types for this works right now
     }
 
     // All IProperties used in a BlockState are added here.
@@ -72,22 +60,18 @@ public class TestBlock extends MultiBlockComponent {
     public boolean isValid(World worldIn, BlockPos pos) {
         // also updates the IProperty, which changes the blockstate
         CuboidCategory result = CuboidCategory.categorize(worldIn, pos);
-        boolean returnVal;
         final BlockState newState;
         if (result.equals(CuboidCategory.ILLEGAL)) {
             newState = worldIn.getBlockState(pos).with(VALID, false);
-            returnVal = false;
         }
         else
         {
-            // return true if this block is a legal cuboid category
             newState = worldIn.getBlockState(pos).with(VALID, true);
-            returnVal = true;
         }
         // Flag 2: send the change to clients
         worldIn.setBlockState(pos, newState, 2);
 
-        return returnVal;
+        return newState.get(VALID);
 
     }
 }
