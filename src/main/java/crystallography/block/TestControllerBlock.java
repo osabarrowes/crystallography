@@ -9,8 +9,12 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.Set;
+
 /**
  * Used to make experimental changes to blocks. Mostly for figuring out how to do things.
+ *
+ * @author xenonni
  */
 public class TestControllerBlock extends ControllerBlock {
 
@@ -32,7 +36,7 @@ public class TestControllerBlock extends ControllerBlock {
     }
 
     @Override
-    public boolean isValid(World worldIn, BlockPos pos)
+    public boolean isValid(World worldIn, BlockPos pos, Set<BlockPos> structure)
     {
         CuboidCategory result = CuboidCategory.categorize(worldIn, pos);
         final BlockState newState;

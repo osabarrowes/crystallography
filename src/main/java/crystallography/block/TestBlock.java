@@ -19,6 +19,8 @@ import java.util.Set;
 
 /**
  * Used to make experimental changes to blocks. Mostly for figuring out how to do things.
+ *
+ * @author xenonni
  */
 public class TestBlock extends MultiBlockComponent {
 
@@ -57,7 +59,7 @@ public class TestBlock extends MultiBlockComponent {
     }
 
     @Override
-    public boolean isValid(World worldIn, BlockPos pos) {
+    public boolean isValid(World worldIn, BlockPos pos, Set<BlockPos> structure) {
         // also updates the IProperty, which changes the blockstate
         CuboidCategory result = CuboidCategory.categorize(worldIn, pos);
         final BlockState newState;

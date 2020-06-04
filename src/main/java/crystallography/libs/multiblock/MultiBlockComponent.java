@@ -26,7 +26,7 @@ public abstract class MultiBlockComponent extends Block{
      * Contains specific logic for this block's validity. Varies based on implementation.
      * @return
      */
-    public abstract boolean isValid(World worldIn, BlockPos pos);
+    public abstract boolean isValid(World worldIn, BlockPos pos, Set<BlockPos> structure);
 
     /**
      * Returns true if this block's specific logic is satisfied && neighboring MultiBlockComponents are valid
@@ -43,7 +43,7 @@ public abstract class MultiBlockComponent extends Block{
             return  false;
         }
 
-        if (isValid(worldIn, centerPos) == false) {
+        if (isValid(worldIn, centerPos, structure) == false) {
             return false;
         }
 

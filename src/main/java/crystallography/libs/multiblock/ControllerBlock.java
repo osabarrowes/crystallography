@@ -13,17 +13,12 @@ import java.util.Set;
  */
 public abstract class ControllerBlock extends MultiBlockComponent {
 
-    // A list containing all the multiblocks in this structure.
-    // CLEANME We do this because recursion. If a block is in the set already, then it has already been visited. No additional visitation is required.
-    // TODO ensure only valid IMultiBlockComponents are contained in this list.
-    private Set<BlockPos> structure;
-
     public ControllerBlock(Properties properties) {
         super(properties);
     }
 
     @Override
-    public boolean isValid(World worldIn, BlockPos pos)
+    public boolean isValid(World worldIn, BlockPos pos, Set<BlockPos> structure)
     {
         int controllerCount = 0;
         int cornerCount = 0;
