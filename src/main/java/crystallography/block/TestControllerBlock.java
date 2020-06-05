@@ -3,12 +3,17 @@ package crystallography.block;
 import crystallography.libs.multiblock.ControllerBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -36,20 +41,44 @@ public class TestControllerBlock extends ControllerBlock {
     }
 
     @Override
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
+    {
+        if(!worldIn.isRemote) {
+            Set<BlockPos> structure = new HashSet<>();
+            BlockState newState;
+
+            if(imValid(worldIn, pos, structure))
+            {
+                for(BlockPos component : structure)
+                {
+                    newState = worldIn.getBlockState(component).with(VALID, true);
+                    worldIn.setBlockState(component, newState, 2); // Flag 2: send the change to clients
+                }
+            }
+            else
+            {
+                for(BlockPos component : structure)
+                {
+                    newState = worldIn.getBlockState(component).with(VALID, false);
+                    worldIn.setBlockState(component, newState, 2);
+                }
+            }
+        }
+        return ActionResultType.SUCCESS; // imValid can help determine what the return type should be, but I don't know how return types for this works right now
+    }
+
+    @Override
     public boolean isValid(World worldIn, BlockPos pos, Set<BlockPos> structure)
     {
         CuboidCategory result = CuboidCategory.categorize(worldIn, pos);
-        final BlockState newState;
+        boolean isCuboid;
         if (result.equals(CuboidCategory.ILLEGAL)) {
-            newState = worldIn.getBlockState(pos).with(VALID, false);
+            isCuboid = false;
         }
         else
         {
-            newState = worldIn.getBlockState(pos).with(VALID, true);
+            isCuboid = true;
         }
-        // Flag 2: send the change to clients
-        worldIn.setBlockState(pos, newState, 2);
-
-        return newState.get(VALID) && super.isValid(worldIn, pos, structure);
+        return isCuboid && super.isValid(worldIn, pos, structure);
     }
 }

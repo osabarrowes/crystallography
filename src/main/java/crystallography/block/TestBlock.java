@@ -34,16 +34,16 @@ public class TestBlock extends MultiBlockComponent {
     public static final BooleanProperty VALID = BooleanProperty.create("valid");
 
     // Called when the block is right clicked.
-    @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
-    {
-        if(!worldIn.isRemote) {
-            LOGGER.info("Cuboid category: " + CuboidCategory.categorize(worldIn, pos));
-            Set<BlockPos> structure = new HashSet<>();
-            imValid(worldIn, pos, structure);
-        }
-        return ActionResultType.SUCCESS; // imValid can help determine what the return type should be, but I don't know how return types for this works right now
-    }
+//    @Override
+//    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
+//    {
+//        if(!worldIn.isRemote) {
+//            LOGGER.info("Cuboid category: " + CuboidCategory.categorize(worldIn, pos));
+//            Set<BlockPos> structure = new HashSet<>();
+//            imValid(worldIn, pos, structure);
+//        }
+//        return ActionResultType.SUCCESS; // imValid can help determine what the return type should be, but I don't know how return types for this works right now
+//    }
 
     // All IProperties used in a BlockState are added here.
     @Override
@@ -60,20 +60,18 @@ public class TestBlock extends MultiBlockComponent {
 
     @Override
     public boolean isValid(World worldIn, BlockPos pos, Set<BlockPos> structure) {
-        // also updates the IProperty, which changes the blockstate
+
         CuboidCategory result = CuboidCategory.categorize(worldIn, pos);
-        final BlockState newState;
+        boolean isCuboid;
         if (result.equals(CuboidCategory.ILLEGAL)) {
-            newState = worldIn.getBlockState(pos).with(VALID, false);
+            isCuboid = false;
         }
         else
         {
-            newState = worldIn.getBlockState(pos).with(VALID, true);
+            isCuboid = true;
         }
         // Flag 2: send the change to clients
-        worldIn.setBlockState(pos, newState, 2);
-
-        return newState.get(VALID);
+        return isCuboid;
 
     }
 }
