@@ -11,6 +11,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import java.util.HashSet;
@@ -66,6 +67,16 @@ public class TestControllerBlock extends ControllerBlock {
         }
         return ActionResultType.SUCCESS; // imValid can help determine what the return type should be, but I don't know how return types for this works right now
     }
+
+//    @Override
+//    public void onPlayerDestroy(IWorld worldIn, BlockPos pos, BlockState state) {
+//        // TODO structure needs to be stored so that I can access all the blocks in the multiblock even after I've been destroyed
+//        // TileEntity?
+//    }
+//    @Override
+//    public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
+//        worldIn.playEvent(player, 2001, pos, getStateId(state));
+//    }
 
     @Override
     public boolean isValid(World worldIn, BlockPos pos, Set<BlockPos> structure)
