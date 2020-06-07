@@ -4,6 +4,8 @@ import crystallography.init.ModTileEntityTypes;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,8 +19,11 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
 
     @Override
     public void tick() {
-        if (world.isRemote())
-            LOGGER.info("I am a tile entity located at " + this.pos);
+//        if (world.isRemote())
+//            LOGGER.info("I am a tile entity located at " + this.pos);
 
     }
+
+
+
 }
