@@ -1,6 +1,7 @@
 package crystallography.init;
 
 import crystallography.Crystallography;
+import crystallography.block.NucleationBlock;
 import crystallography.block.TestBlock;
 import crystallography.block.TestControllerBlock;
 import crystallography.block.Vat_component_functional_overseer_T1;
@@ -34,8 +35,8 @@ public class ModBlocks {
     public static final RegistryObject<Block> VAT_COMPONENT_STRUCTURAL_T1 = BLOCKS.register("vat_component_structural_t1", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
     public static final RegistryObject<Block> VAT_COMPONENT_STRUCTURAL_T1_TRANSPARENT = BLOCKS.register("vat_component_structural_t1_transparent", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
     public static final RegistryObject<Block> ENCHANTING_BLOCK = BLOCKS.register("enchanting_block", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
-    public static final RegistryObject<Block> NUCLEATION_BLOCK = BLOCKS.register("nucleation_block", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
 
     public static final RegistryObject<Block> TEST_BLOCK = BLOCKS.register("test_block", () -> new TestBlock(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
     public static final RegistryObject<Block> TEST_CONTROLLER_BLOCK = BLOCKS.register("test_controller_block", () -> new TestControllerBlock(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
+    public static final RegistryObject<Block> NUCLEATION_BLOCK = BLOCKS.register("nucleation_block", () -> new NucleationBlock(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
 }
