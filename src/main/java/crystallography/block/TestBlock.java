@@ -30,34 +30,6 @@ public class TestBlock extends MultiBlockComponent {
         super(properties);
     }
 
-    // IProperties are used in the construction of BlockStates (not to be confused with .json files)
-    public static final BooleanProperty VALID = BooleanProperty.create("valid");
-
-    // Called when the block is right clicked.
-//    @Override
-//    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
-//    {
-//        if(!worldIn.isRemote) {
-//            LOGGER.info("Cuboid category: " + CuboidCategory.categorize(worldIn, pos));
-//            Set<BlockPos> structure = new HashSet<>();
-//            imValid(worldIn, pos, structure);
-//        }
-//        return ActionResultType.SUCCESS; // imValid can help determine what the return type should be, but I don't know how return types for this works right now
-//    }
-
-    // All IProperties used in a BlockState are added here.
-    @Override
-    protected void fillStateContainer(final StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
-        builder.add(VALID);
-    }
-
-    // The default state of all IProperties is set here.
-    @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState().with(VALID, false);
-    }
-
     @Override
     public boolean isValid(World worldIn, BlockPos pos, Set<BlockPos> structure) {
 

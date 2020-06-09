@@ -30,21 +30,6 @@ public class TestControllerBlock extends ControllerBlock {
 
     public TestControllerBlock(Properties properties) { super(properties); }
 
-    public static final BooleanProperty VALID = BooleanProperty.create("valid"); // This has the same name as a property in TestBlock. Hopefully that doesn't cause problems
-
-    // All IProperties used in a BlockState are added here.
-    @Override
-    protected void fillStateContainer(final StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
-        builder.add(VALID);
-    }
-
-    // The default state of all IProperties is set here.
-    @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState().with(VALID, false);
-    }
-
     @Override
     public boolean hasTileEntity(BlockState state) {
         return true;
@@ -86,7 +71,7 @@ public class TestControllerBlock extends ControllerBlock {
 //    @Override
 //    public void onPlayerDestroy(IWorld worldIn, BlockPos pos, BlockState state) {
 //        // TODO structure needs to be stored so that I can access all the blocks in the multiblock even after I've been destroyed
-//        // TileEntity?
+//        // TileEntity should manage this
 //    }
 //    @Override
 //    public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {

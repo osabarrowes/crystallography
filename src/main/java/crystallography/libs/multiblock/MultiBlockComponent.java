@@ -2,7 +2,11 @@ package crystallography.libs.multiblock;
 
 import crystallography.libs.Util;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -27,6 +31,24 @@ public abstract class MultiBlockComponent extends Block{
      * @return
      */
     public abstract boolean isValid(World worldIn, BlockPos pos, Set<BlockPos> structure);
+
+    /**
+     * IProprety used to check validity.
+     */
+    public static final BooleanProperty VALID = BooleanProperty.create("valid"); // This has the same name as a property in TestBlock. Hopefully that doesn't cause problems
+
+    // All IProperties used in a BlockState are added here.
+    @Override
+    protected void fillStateContainer(final StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(VALID);
+    }
+
+    // The default state of all IProperties is set here.
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        return this.getDefaultState().with(VALID, false);
+    }
 
     /**
      * Returns true if this block's specific logic is satisfied && neighboring MultiBlockComponents are valid
