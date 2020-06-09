@@ -200,6 +200,24 @@ public abstract class MultiBlockComponent extends Block{
                 return CuboidCategory.ILLEGAL;
             }
         }
+
+        /**
+         * Returns false is the cuboid category is ILLEGAL. Convenience method.
+         * @param worldIn the world of the block
+         * @param pos the position of the block
+         */
+        public static boolean isCuboid(World worldIn, BlockPos pos) {
+            CuboidCategory result = CuboidCategory.categorize(worldIn, pos);
+            boolean isCuboid;
+            if (result.equals(CuboidCategory.ILLEGAL)) {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+
+        }
     }
 
 }

@@ -81,15 +81,6 @@ public class TestControllerBlock extends ControllerBlock {
     @Override
     public boolean isValid(World worldIn, BlockPos pos, Set<BlockPos> structure)
     {
-        CuboidCategory result = CuboidCategory.categorize(worldIn, pos);
-        boolean isCuboid;
-        if (result.equals(CuboidCategory.ILLEGAL)) {
-            isCuboid = false;
-        }
-        else
-        {
-            isCuboid = true;
-        }
-        return isCuboid && super.isValid(worldIn, pos, structure);
+        return CuboidCategory.isCuboid(worldIn, pos) && super.isValid(worldIn, pos, structure);
     }
 }

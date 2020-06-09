@@ -33,17 +33,7 @@ public class TestBlock extends MultiBlockComponent {
     @Override
     public boolean isValid(World worldIn, BlockPos pos, Set<BlockPos> structure) {
 
-        CuboidCategory result = CuboidCategory.categorize(worldIn, pos);
-        boolean isCuboid;
-        if (result.equals(CuboidCategory.ILLEGAL)) {
-            isCuboid = false;
-        }
-        else
-        {
-            isCuboid = true;
-        }
-        // Flag 2: send the change to clients
-        return isCuboid;
+        return CuboidCategory.isCuboid(worldIn, pos);
 
     }
 }
