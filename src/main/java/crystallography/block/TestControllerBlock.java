@@ -1,5 +1,6 @@
 package crystallography.block;
 
+import crystallography.init.ModBlocks;
 import crystallography.libs.multiblock.ControllerBlock;
 import crystallography.libs.tileentity.TestControllerBlockTileEntity;
 import net.minecraft.block.Block;
@@ -18,6 +19,8 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -81,6 +84,15 @@ public class TestControllerBlock extends ControllerBlock {
     @Override
     public boolean isValid(World worldIn, BlockPos pos, Set<BlockPos> structure)
     {
-        return CuboidCategory.isCuboid(worldIn, pos) && super.isValid(worldIn, pos, structure);
+        Collection<Block> blacklist = new ArrayList<>(), whitelist = new ArrayList<>();
+        blacklist.add(ModBlocks.NOT_FLUID.get());
+        CuboidCategory c = CuboidCategory.categorize(worldIn, pos, whitelist, blacklist);
+        boolean value;
+        if (c.equals(CuboidCategory.ILLEGAL))
+            value = false;
+        else
+            value = true;
+
+        return value && super.isValid(worldIn, pos, structure);
     }
 }
