@@ -26,7 +26,7 @@ public class NucleationBlock extends MultiBlockComponent{
         int fluidCount = 0;
         for (Direction d : neighbors.keySet())
         {
-            // FIXME for now, we'll only require that the nucleation be touching at least one block of fluid. This does guarantee the fluid is actually within the vat, however.
+            // FIXME for now, we'll only require that the nucleation be touching at least one block of fluid. This does not guarantee the fluid is actually within the vat, however.
             if(neighbors.get(d).equals(Blocks.WATER))
                 fluidCount++;
         }

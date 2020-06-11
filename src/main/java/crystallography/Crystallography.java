@@ -3,6 +3,8 @@ package crystallography;
 import crystallography.init.ModBlocks;
 import crystallography.init.ModTileEntityTypes;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -51,6 +53,10 @@ public class Crystallography
         LOGGER.info("HELLO FROM PREINIT");
         LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
         LOGGER.info("Example Ore >> {}", ModBlocks.EXAMPLE_ORE.get().getRegistryName());
+
+        // This is supposed to go here, but ideally I'd like it somewhere less abstracted from the blocks themselves... oh well
+        // https://www.minecraftforge.net/forum/topic/78861-1151-transparent-blocks-arnt/
+        RenderTypeLookup.setRenderLayer(ModBlocks.NOT_FLUID.get(), RenderType.getCutout());
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {

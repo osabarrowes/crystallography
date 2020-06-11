@@ -1,12 +1,12 @@
 package crystallography.init;
 
 import crystallography.Crystallography;
-import crystallography.block.NucleationBlock;
-import crystallography.block.TestBlock;
-import crystallography.block.TestControllerBlock;
-import crystallography.block.Vat_component_functional_overseer_T1;
+import crystallography.block.*;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -39,4 +39,16 @@ public class ModBlocks {
     public static final RegistryObject<Block> TEST_BLOCK = BLOCKS.register("test_block", () -> new TestBlock(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
     public static final RegistryObject<Block> TEST_CONTROLLER_BLOCK = BLOCKS.register("test_controller_block", () -> new TestControllerBlock(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
     public static final RegistryObject<Block> NUCLEATION_BLOCK = BLOCKS.register("nucleation_block", () -> new NucleationBlock(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
+
+    // This block has the MISCELLANEOUS material. It is very similar to a torch
+    public static final RegistryObject<Block> NOT_FLUID = BLOCKS.register("not_fluid", () -> new NotFluid(Block.Properties.create(Material.MISCELLANEOUS)
+            .hardnessAndResistance(1.5F)
+            .doesNotBlockMovement()
+    ));
+
+
+
+
+
+
 }
