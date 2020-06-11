@@ -1,5 +1,6 @@
 package crystallography.block;
 
+import crystallography.init.ModBlocks;
 import crystallography.libs.Util;
 import crystallography.libs.multiblock.MultiBlockComponent;
 import net.minecraft.block.Block;
@@ -27,7 +28,7 @@ public class NucleationBlock extends MultiBlockComponent{
         for (Direction d : neighbors.keySet())
         {
             // FIXME for now, we'll only require that the nucleation be touching at least one block of fluid. This does not guarantee the fluid is actually within the vat, however.
-            if(neighbors.get(d).equals(Blocks.WATER))
+            if(neighbors.get(d).equals(Blocks.WATER) || neighbors.get(d).equals(ModBlocks.NOT_FLUID.get()))
                 fluidCount++;
         }
         return fluidCount > 0;

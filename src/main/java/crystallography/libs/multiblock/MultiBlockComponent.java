@@ -123,6 +123,27 @@ public abstract class MultiBlockComponent extends Block{
     }
 
     /**
+     * Returns the number of axes which contain at least one MultiBlockComponent.
+     * This implementation uses a whitelist and a blacklist.
+     * @param worldIn the world of the block which has neighbors
+     * @param pos the position of the block which has neighbors
+     */
+    public static <T extends Block> int countRecognizedNeighborAxes(World worldIn, BlockPos pos, Collection<T> whitelist, Collection<T> blacklist) {
+        int count = 0;
+        Map<Direction, Block> neighbors = Util.getNeighbors(worldIn, pos);
+        if (isOk(neighbors.get(Direction.EAST), whitelist, blacklist)|| isOk(neighbors.get(Direction.WEST), whitelist, blacklist)){
+            count++;
+        }
+        if (isOk(neighbors.get(Direction.NORTH), whitelist, blacklist)|| isOk(neighbors.get(Direction.SOUTH), whitelist, blacklist)){
+            count++;
+        }
+        if (isOk(neighbors.get(Direction.UP), whitelist, blacklist)|| isOk(neighbors.get(Direction.DOWN), whitelist, blacklist)){
+            count++;
+        }
+        return count;
+    }
+
+    /**
      * Counts the number of neighbors which are MultiBlockComponents.
      * @param worldIn the world of the block which has neighbors
      * @param pos the position of the block which has neighbors
@@ -139,31 +160,36 @@ public abstract class MultiBlockComponent extends Block{
     }
 
     /**
+     * Counts the number of neighbors which are MultiBlockComponents.
+     * This implementation uses a whitelist and a blacklist.
+     * @param worldIn the world of the block which has neighbors
+     * @param pos the position of the block which has neighbors
+     */
+    public static <T extends Block> int countRecognizedNeighbors(World worldIn, BlockPos pos, Collection<T> whitelist, Collection<T> blacklist)
+    {
+        int count = 0;
+        Map<Direction, Block> neighbors = Util.getNeighbors(worldIn, pos);
+        for(Direction d : neighbors.keySet()) {
+            if(isOk(neighbors.get(d), whitelist, blacklist))
+                count++;
+        }
+        return count;
+    }
+
+    /**
      * A MultiBlockComponent can be one of these categories in a cuboid structure.
      */
     public enum CuboidCategory {
         CORNER, LIP, EDGE, FACE, ILLEGAL;
 
         /**
-         * Convenience overload for {@link #categorize(World, BlockPos, Collection, Collection)}.
-         * Whitelist defaults to only Blocks.AIR. Blacklist defaults to empty.
-         */
-        public static CuboidCategory categorize(World worldIn, BlockPos pos)
-        {
-            Collection<Block> whitelist = new HashSet<>(), blacklist = new HashSet<>();
-            whitelist.add(Blocks.AIR);
-            return categorize(worldIn, pos, whitelist, blacklist);
-        }
-        /**
          * Returns the cuboid category of the specified block. Used in ensuring a block is part of a cuboid multiblock structure.
-         *
+         * By default, any MultiBlockComponent is considered a neighbor.
          * @param worldIn the world of the block
          * @param pos the position of the block
-         * @param whitelist blocks which are recognized as neighbors
-         * @param blacklist blocks which are not recognized as neighbors
          * @return the CuboidCategory of the block.
          */
-        public static <T extends Block> CuboidCategory categorize(World worldIn, BlockPos pos, Collection<T> whitelist, Collection<T> blacklist)
+        public static CuboidCategory categorize(World worldIn, BlockPos pos)
         {
             if(countRecognizedNeighbors(worldIn, pos) == 3) {
 
@@ -200,6 +226,50 @@ public abstract class MultiBlockComponent extends Block{
                 return CuboidCategory.ILLEGAL;
             }
         }
+        /**
+         * Returns the cuboid category of the specified block. Used in ensuring a block is part of a cuboid multiblock structure.
+         *
+         * @param worldIn the world of the block
+         * @param pos the position of the block
+         * @param whitelist blocks which are recognized as neighbors
+         * @param blacklist blocks which are not recognized as neighbors
+         * @return the CuboidCategory of the block.
+         */
+        public static <T extends Block> CuboidCategory categorize(World worldIn, BlockPos pos, Collection<T> whitelist, Collection<T> blacklist)
+        {
+            if(countRecognizedNeighbors(worldIn, pos, whitelist, blacklist) == 3) {
+
+                if (countRecognizedNeighborAxes(worldIn, pos, whitelist, blacklist) == 3) {
+                    return CuboidCategory.CORNER;
+                }
+                else if(countRecognizedNeighborAxes(worldIn, pos, whitelist, blacklist) == 2){
+                    if(isOk(Util.getNeighbors(worldIn, pos).get(Direction.UP), whitelist, blacklist) || !isOk(Util.getNeighbors(worldIn, pos).get(Direction.DOWN),whitelist ,blacklist))
+                    {
+                        return CuboidCategory.ILLEGAL;
+                    }
+                    return CuboidCategory.LIP;
+                }
+                else {
+                    return CuboidCategory.ILLEGAL;
+                }
+
+            }
+            else if(countRecognizedNeighbors(worldIn, pos, whitelist, blacklist) == 4)
+            {
+                if (countRecognizedNeighborAxes(worldIn, pos, whitelist, blacklist) == 3) {
+                    return CuboidCategory.EDGE;
+                }
+                else if(countRecognizedNeighborAxes(worldIn, pos, whitelist, blacklist) == 2) {
+                    return CuboidCategory.FACE;
+                }
+                else {
+                    return CuboidCategory.ILLEGAL;
+                }
+            }
+            else{
+                return CuboidCategory.ILLEGAL;
+            }
+        }
 
         /**
          * Returns false is the cuboid category is ILLEGAL. Convenience method.
@@ -208,7 +278,6 @@ public abstract class MultiBlockComponent extends Block{
          */
         public static boolean isCuboid(World worldIn, BlockPos pos) {
             CuboidCategory result = CuboidCategory.categorize(worldIn, pos);
-            boolean isCuboid;
             if (result.equals(CuboidCategory.ILLEGAL)) {
                 return false;
             }
@@ -218,6 +287,20 @@ public abstract class MultiBlockComponent extends Block{
             }
 
         }
+
+
+
+    }
+    // Helper method for logic of the whitelist and blacklist. The whitelist trumps the blacklist.
+    protected static <T extends Block> boolean isOk(Block b, Collection<T> whitelist, Collection<T> blacklist)
+    {
+        if(whitelist.contains(b))
+            return true;
+        if(blacklist.contains(b))
+            return false;
+        if(b instanceof MultiBlockComponent)
+            return true;
+        return false;
     }
 
 }
