@@ -1,11 +1,13 @@
 package crystallography.init;
 
 import crystallography.Crystallography;
+import crystallography.libs.tileentity.NucleationBlockTileEntity;
 import crystallography.libs.tileentity.TestControllerBlockTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.objectweb.asm.commons.JSRInlinerAdapter;
 
 /**
  * Holds a list of all our {@link TileEntityType}s.
@@ -30,4 +32,7 @@ public class ModTileEntityTypes {
             TileEntityType.Builder.create(TestControllerBlockTileEntity::new, ModBlocks.TEST_CONTROLLER_BLOCK.get()).build(null)
     );
 
+    public static final RegistryObject<TileEntityType<NucleationBlockTileEntity>> NUCLEATION_BLOCK_TILE_ENTITY = TILE_ENTITY_TYPES.register("nucleation_block_tile_entity", () ->
+            TileEntityType.Builder.create(NucleationBlockTileEntity::new, ModBlocks.NUCLEATION_BLOCK.get()).build(null)
+    );
 }

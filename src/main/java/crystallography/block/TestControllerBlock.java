@@ -48,6 +48,21 @@ public class TestControllerBlock extends ControllerBlock {
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
     {
         if(!worldIn.isRemote) {
+
+            //debug
+            if ((player.isCrouching()) && worldIn.getBlockState(pos).get(VALID))
+            {
+                TileEntity myTE = worldIn.getTileEntity(pos);
+                if(myTE instanceof TestControllerBlockTileEntity) // SAFETY
+                {
+                    for (BlockPos component : ((TestControllerBlockTileEntity) myTE).getStructure())
+                        LOGGER.info("Component " + worldIn.getBlockState(component).getBlock() + " found at " + component);
+                }
+                LOGGER.info("Found a total of " + ((TestControllerBlockTileEntity) myTE).getStructure().size() + " components");
+                return ActionResultType.SUCCESS;
+            }
+            //end debug
+
             Set<BlockPos> structure = new HashSet<>();
             BlockState newState;
 
@@ -66,6 +81,12 @@ public class TestControllerBlock extends ControllerBlock {
                     newState = worldIn.getBlockState(component).with(VALID, false);
                     worldIn.setBlockState(component, newState, 2);
                 }
+            }
+
+            TileEntity myTE = worldIn.getTileEntity(pos);
+            if(myTE instanceof TestControllerBlockTileEntity) // SAFETY
+            {
+                ((TestControllerBlockTileEntity) myTE).setStructure(structure);
             }
         }
         return ActionResultType.SUCCESS; // imValid can help determine what the return type should be, but I don't know how return types for this works right now
