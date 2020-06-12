@@ -40,8 +40,19 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
     public void addItem(Item item, int count)
     {
         // add or increment an entry in data
+        if(data.containsKey(item))
+            data.put(item, data.get(item) + count);
+        else
+            data.put(item, count);
 
         LOGGER.info("I received data. Item: " + item + ", count: " + count);
+    }
+
+    //DEBUG
+    public void reportContents()
+    {
+        for(Item item : data.keySet())
+        LOGGER.info("I contain Item: " + item + ", count: " + data.get(item));
     }
 
     @Override

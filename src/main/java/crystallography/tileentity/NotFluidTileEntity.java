@@ -23,31 +23,29 @@ public class NotFluidTileEntity extends TileEntity {
     public void onEntityCollision(Entity entityIn) {
         if (entityIn instanceof ItemEntity) {
 
-            if (/* valid item */ true) {
+            if (/* TODO valid item */ true) {
 
-                LOGGER.info("Tile entity has seen an item");
                 //inform the controller
                 ItemStack itemstack = ((ItemEntity) entityIn).getItem();
                 Item item = itemstack.getItem();
                 int count = itemstack.getCount();
-                LOGGER.info("Item information parsed.");
+
+                if(controllerPos==null)
+                    return; // stop, you have violated the law
+                // It would probably be good to know why controllerPos is null on the second time around.
+                // It would probably be good to know why there's a second time around in the first place
 
                 TileEntity controllerTE = this.getWorld().getTileEntity(controllerPos);
-                LOGGER.info("Controller tile entity accessed.");
-
                 if(controllerTE instanceof TestControllerBlockTileEntity)
                 {
                     ((TestControllerBlockTileEntity) controllerTE).addItem(item, count);
-                    LOGGER.info("Information was sent to the controller.");
                 }
                 else {
-                    // this is bad
-                    LOGGER.warn("this is bad.");
+                    LOGGER.warn("this is bad. controllerPos pointed to something that was not a controller...");
                 }
 
                 //consume the item
                 entityIn.remove();
-                LOGGER.info("item removed.");
             }
         }
     }

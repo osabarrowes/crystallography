@@ -51,10 +51,11 @@ public class TestControllerBlock extends ControllerBlock {
                 TileEntity myTE = worldIn.getTileEntity(pos);
                 if(myTE instanceof TestControllerBlockTileEntity) // SAFETY
                 {
-                    for (BlockPos component : ((TestControllerBlockTileEntity) myTE).getStructure())
-                        LOGGER.info("Component " + worldIn.getBlockState(component).getBlock() + " found at " + component);
+//                    for (BlockPos component : ((TestControllerBlockTileEntity) myTE).getStructure())
+//                        LOGGER.info("Component " + worldIn.getBlockState(component).getBlock() + " found at " + component);
+//                    LOGGER.info("Found a total of " + ((TestControllerBlockTileEntity) myTE).getStructure().size() + " components");
+                    ((TestControllerBlockTileEntity) myTE).reportContents();
                 }
-                LOGGER.info("Found a total of " + ((TestControllerBlockTileEntity) myTE).getStructure().size() + " components");
                 return ActionResultType.SUCCESS;
             }
             //end debug
