@@ -2,8 +2,10 @@ package crystallography.init;
 
 import crystallography.Crystallography;
 import crystallography.block.*;
+import crystallography.libs.UniversalSolventFluid;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.RenderTypeLookup;
@@ -47,6 +49,7 @@ public class ModBlocks {
             .doesNotBlockMovement()
     ));
 
+    public static final RegistryObject<Block> UNIVERSAL_SOLVENT_FLUID_BLOCK = BLOCKS.register("universal_solvent_fluid_block", () -> new FlowingFluidBlock(UniversalSolventFluid::new, Block.Properties.create(Material.WATER)));
 
 
 

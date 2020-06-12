@@ -1,6 +1,7 @@
 package crystallography;
 
 import crystallography.init.ModBlocks;
+import crystallography.init.ModFluids;
 import crystallography.init.ModTileEntityTypes;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.RenderType;
@@ -45,6 +46,7 @@ public class Crystallography
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         ModBlocks.BLOCKS.register(modEventBus);
         ModTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
+        ModFluids.FLUIDS.register(modEventBus);
     }
 
     private void setup(final FMLCommonSetupEvent event)
