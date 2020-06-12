@@ -1,8 +1,12 @@
 package crystallography.block;
 
 import crystallography.libs.multiblock.MultiBlockComponent;
+import crystallography.tileentity.NotFluidTileEntity;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.tileentity.HopperTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -30,5 +34,11 @@ public class NotFluid extends MultiBlockComponent {
     }
 
 
-
+    @Override
+    public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
+        TileEntity tileentity = worldIn.getTileEntity(pos);
+        if (tileentity instanceof NotFluidTileEntity) {
+            ((NotFluidTileEntity)tileentity).onEntityCollision(entityIn);
+        }
+    }
 }
