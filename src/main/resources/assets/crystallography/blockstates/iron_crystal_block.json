@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "crystallography:block/iron_crystal_block"
+    }
+  }
+}

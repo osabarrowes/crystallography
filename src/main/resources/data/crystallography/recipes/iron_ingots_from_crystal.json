@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "crystallography:example_item"
+      "item": "crystallography:iron_crystal_block"
     }
   ],
   "result": {
