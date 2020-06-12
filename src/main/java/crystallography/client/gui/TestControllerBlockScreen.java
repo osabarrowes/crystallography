@@ -1,9 +1,8 @@
 package crystallography.client.gui;
 
 import crystallography.init.ModBlocks;
-import crystallography.libs.tileentity.TestControllerBlockTileEntity;
+import crystallography.tileentity.TestControllerBlockTileEntity;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.text.ITextComponent;
 
 public class TestControllerBlockScreen extends Screen {
 

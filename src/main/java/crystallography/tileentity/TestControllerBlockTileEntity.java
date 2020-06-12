@@ -1,4 +1,4 @@
-package crystallography.libs.tileentity;
+package crystallography.tileentity;
 
 import crystallography.init.ModTileEntityTypes;
 import net.minecraft.block.Block;

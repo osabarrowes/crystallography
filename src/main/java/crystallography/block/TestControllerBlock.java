@@ -2,20 +2,16 @@ package crystallography.block;
 
 import crystallography.init.ModBlocks;
 import crystallography.libs.multiblock.ControllerBlock;
-import crystallography.libs.tileentity.TestControllerBlockTileEntity;
+import crystallography.tileentity.TestControllerBlockTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -92,15 +88,18 @@ public class TestControllerBlock extends ControllerBlock {
         return ActionResultType.SUCCESS; // imValid can help determine what the return type should be, but I don't know how return types for this works right now
     }
 
+    //TODO structure invalidation needs to occur whenever a block is broken
+    // design question: should breaking a block cause the entire structure to invalidate, regardless of whether or not the resulting structure is valid?
 //    @Override
 //    public void onPlayerDestroy(IWorld worldIn, BlockPos pos, BlockState state) {
-//        // TODO structure needs to be stored so that I can access all the blocks in the multiblock even after I've been destroyed
-//        // TileEntity should manage this
 //    }
 //    @Override
 //    public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
 //        worldIn.playEvent(player, 2001, pos, getStateId(state));
 //    }
+    // neighborChanged
+    // updateState
+    // onReplaced? what does this method do
 
     @Override
     public boolean isValid(World worldIn, BlockPos pos, Set<BlockPos> structure)

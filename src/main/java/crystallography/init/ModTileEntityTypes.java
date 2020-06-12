@@ -1,8 +1,9 @@
 package crystallography.init;
 
 import crystallography.Crystallography;
-import crystallography.libs.tileentity.NucleationBlockTileEntity;
-import crystallography.libs.tileentity.TestControllerBlockTileEntity;
+import crystallography.tileentity.NotFluidTileEntity;
+import crystallography.tileentity.NucleationBlockTileEntity;
+import crystallography.tileentity.TestControllerBlockTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -34,5 +35,9 @@ public class ModTileEntityTypes {
 
     public static final RegistryObject<TileEntityType<NucleationBlockTileEntity>> NUCLEATION_BLOCK_TILE_ENTITY = TILE_ENTITY_TYPES.register("nucleation_block_tile_entity", () ->
             TileEntityType.Builder.create(NucleationBlockTileEntity::new, ModBlocks.NUCLEATION_BLOCK.get()).build(null)
+    );
+
+    public static final RegistryObject<TileEntityType<NotFluidTileEntity>> NOT_FLUID_TILE_ENTITY = TILE_ENTITY_TYPES.register("not_fluid_tile_entity", () ->
+            TileEntityType.Builder.create(NotFluidTileEntity::new, ModBlocks.NOT_FLUID.get()).build(null)
     );
 }
