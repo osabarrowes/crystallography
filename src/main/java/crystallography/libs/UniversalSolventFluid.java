@@ -2,6 +2,7 @@ package crystallography.libs;
 
 import crystallography.Crystallography;
 import crystallography.init.ModBlocks;
+import crystallography.init.ModFluids;
 import crystallography.init.ModItemGroups;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -85,35 +86,38 @@ public class UniversalSolventFluid extends FlowingFluid {
         else
         {
             source = this;
-            this.block = new FlowingFluidBlock(() -> this.source, Block.Properties.create(Material.WATER))
-            {
-                @Override
-                protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-                {
-                    super.fillStateContainer(builder);
-                    builder.add(UniversalSolventFluid.this.getStateContainer().getProperties().toArray(new IProperty[0]));
-                }
-
-                @Override
-                public IFluidState getFluidState(BlockState state)
-                {
-                    IFluidState baseState = super.getFluidState(state);
-                    for(IProperty<?> prop : UniversalSolventFluid.this.getStateContainer().getProperties())
-                        if(prop!=FlowingFluidBlock.LEVEL)
-                            baseState = withCopiedValue(prop, baseState, state);
-                    return baseState;
-                }
-
-                private <T extends IStateHolder<T>, S extends Comparable<S>>
-                T withCopiedValue(IProperty<S> prop, T oldState, IStateHolder<?> copyFrom)
-                {
-                    return oldState.with(prop, copyFrom.get(prop));
-                }
-            };
             this.block = ModBlocks.UNIVERSAL_SOLVENT_FLUID_BLOCK.get();
+//            this.block = new FlowingFluidBlock(() -> this.source, Block.Properties.create(Material.WATER))
+//            {
+//                @Override
+//                protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+//                {
+//                    super.fillStateContainer(builder);
+//                    builder.add(UniversalSolventFluid.this.getStateContainer().getProperties().toArray(new IProperty[0]));
+//                }
+//
+//                @Override
+//                public IFluidState getFluidState(BlockState state)
+//                {
+//                    IFluidState baseState = super.getFluidState(state);
+//                    for(IProperty<?> prop : UniversalSolventFluid.this.getStateContainer().getProperties())
+//                        if(prop!=FlowingFluidBlock.LEVEL)
+//                            baseState = withCopiedValue(prop, baseState, state);
+//                    return baseState;
+//                }
+//
+//                private <T extends IStateHolder<T>, S extends Comparable<S>>
+//                T withCopiedValue(IProperty<S> prop, T oldState, IStateHolder<?> copyFrom)
+//                {
+//                    return oldState.with(prop, copyFrom.get(prop));
+//                }
+//            };
+//            this.block.setRegistryName(Crystallography.MOD_ID, fluidName+"_fluid_block");
+//            ModBlocks.BLOCKS.register("universal_solvent_fluid_block", () -> this.block);
+
+            // TODO make your own damn buckets
 
             flowing = createFlowingVariant();
-            setRegistryName(Crystallography.MOD_ID, fluidName);
         }
     }
 

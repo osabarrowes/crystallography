@@ -24,7 +24,7 @@ public class Crystallography
 
     public static final String MOD_ID = "crystallography";
 
-    public static final String MOD_NAME= "Minimum Viable Product";
+    public static final String MOD_NAME= "Crystallography";
 
     public Crystallography() {
         // Register the setup method for modloading

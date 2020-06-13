@@ -10,6 +10,7 @@ import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.state.IProperty;
 import net.minecraft.state.IStateHolder;
@@ -55,20 +56,6 @@ public class ModBlocks {
             .doesNotBlockMovement()
     ));
 
-
-    public static final RegistryObject<Block> UNIVERSAL_SOLVENT_FLUID_BLOCK = BLOCKS.register("universal_solvent_fluid_block", () -> new FlowingFluidBlock(
-            () -> new UniversalSolventFluid(
-                    "universal_solvent",
-                    new ResourceLocation(Crystallography.MOD_ID, "block/fluid/universal_solvent_still"),
-                    new ResourceLocation(Crystallography.MOD_ID, "block/fluid/universal_solvent_flowing"),
-                    null, // I hope that this is handled by the class itself, which overrides createAttributes
-                    true
-            ),
-            Block.Properties.create(Material.WATER))
-    );
-
-
-
-
+    public static final RegistryObject<Block> UNIVERSAL_SOLVENT_FLUID_BLOCK = BLOCKS.register("universal_solvent_fluid_block", () -> new FlowingFluidBlock(() -> (FlowingFluid) ModFluids.UNIVERSAL_SOLVENT.get(), Block.Properties.create(Material.WATER)));
 
 }
