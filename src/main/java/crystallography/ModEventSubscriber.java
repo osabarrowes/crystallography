@@ -1,18 +1,25 @@
 package crystallography;
 
 import crystallography.init.ModBlocks;
+import crystallography.init.ModFluids;
 import crystallography.init.ModItemGroups;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
+import crystallography.libs.UniversalSolventFluid;
+import net.minecraft.block.Block;
+import net.minecraft.item.*;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import javax.annotation.Nullable;
 
 /*
  * The @EventBusSubscriber annotation indicates to Forge that this class
@@ -53,6 +60,37 @@ public class ModEventSubscriber {
                     registry.register(blockItem);
                 });
         LOGGER.debug("Registered BlockItems");
+
+        // register fluid buckets
+        ModFluids.FLUIDS.getEntries().stream()
+                .map(RegistryObject::get)
+                .forEach(fluid -> {
+                    final Item.Properties properties = new Item.Properties().maxStackSize(1).group(ModItemGroups.MOD_ITEM_GROUP);
+
+                    final BucketItem bucketItem = new BucketItem(() -> fluid, properties)
+                    {
+                        @Override
+                        public ItemStack getContainerItem(ItemStack itemStack)
+                        {
+                            return new ItemStack(Items.BUCKET);
+                        }
+
+                        @Override
+                        public boolean hasContainerItem(ItemStack stack)
+                        {
+                            return true;
+                        }
+
+                        @Override
+                        public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt)
+                        {
+                            return new FluidBucketWrapper(stack);
+                        }
+
+                    };
+                    bucketItem.setRegistryName(Crystallography.MOD_ID, fluid.getRegistryName()+"_bucket");
+                });
+        LOGGER.debug("Registered BucketItems");
 
         // register normal items
         event.getRegistry().registerAll(
