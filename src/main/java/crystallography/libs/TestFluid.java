@@ -17,5 +17,4 @@ public class TestFluid extends WaterFluid {
             return fluidState.get(LEVEL_1_8);
     }
 
-
 }

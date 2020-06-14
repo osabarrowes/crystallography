@@ -7,9 +7,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.Item;
 import net.minecraft.state.StateContainer;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -87,9 +90,14 @@ public class CrystallographyFluid extends FlowingFluid {
         }
     }
 
-    // lifted right out of IEFluid
+    /* lifted right out of IEFluid
+     * WaterFluid uses nested classes Flowing and Source to the same effect, however WaterFluid
+     * is an abstract class and has no default constructor, which is required for these nested classes
+     * (or you could give them a constructor similar to what we have here, which defeats their purpose)
+     */
     protected CrystallographyFluid createFlowingVariant()
     {
+        // the constructor isn't meant to be called with isSource=false anywhere else, as far as I can tell
         CrystallographyFluid ret = new CrystallographyFluid(fluidName, stillTex, flowingTex, buildAttributes, false)
         {
             @Override
@@ -129,54 +137,61 @@ public class CrystallographyFluid extends FlowingFluid {
 
     @Override
     protected boolean canSourcesMultiply() {
-        return false;
+        return true;
     }
 
+    // This is what lets the fluid wash away torches, and things like that
     @Override
     protected void beforeReplacingBlock(IWorld worldIn, BlockPos pos, BlockState state) {
-
+        TileEntity tileentity = state.hasTileEntity() ? worldIn.getTileEntity(pos) : null;
+        Block.spawnDrops(state, worldIn.getWorld(), pos, tileentity);
     }
 
     @Override
     protected int getSlopeFindDistance(IWorldReader worldIn) {
-        return 4;
+        return 4; // same as water
     }
 
     @Override
     protected int getLevelDecreasePerBlock(IWorldReader worldIn) {
-        return 1;
+        return 1; // same as water
     }
 
     @Override
     public Item getFilledBucket() {
-        return bucket;
+        return bucket; // copied from IEFluid
     }
 
+    // this has something to do with how we treat other fluids we encounter in the world
     @Override
     protected boolean canDisplace(IFluidState state, IBlockReader blockReader, BlockPos pos, Fluid fluidIn, Direction direction) {
-        return direction==Direction.DOWN&&!isEquivalentTo(fluidIn);
+        return direction==Direction.DOWN && !isEquivalentTo(fluidIn); // copied from IEFluid
+        // !fluidIn.isIn(FluidTags.WATER); // copied from water
+
     }
 
     @Override
     public int getTickRate(IWorldReader worldReader) {
-        return 5;
+        return 5; // same as water
     }
 
     @Override
     protected float getExplosionResistance() {
-        return 100;
+        return 100; // same as water
     }
 
     @Override
     protected BlockState getBlockState(IFluidState state) {
-        return block.getDefaultState().with(FlowingFluidBlock.LEVEL, getLevelFromState(state));
+        return block.getDefaultState().with(FlowingFluidBlock.LEVEL, getLevelFromState(state)); // more or less same as water, copied from IEFluid
     }
 
+    // same as water, though IEFluid combined the methods in Flowing and Source into one
     @Override
     public boolean isSource(IFluidState state) {
         return state.getFluid()==source;
     }
 
+    // same as water, though IEFluid combined the methods in Flowing and Source into one
     @Override
     public int getLevel(IFluidState fluidState) {
         if(isSource(fluidState))
@@ -184,5 +199,7 @@ public class CrystallographyFluid extends FlowingFluid {
         else
             return fluidState.get(LEVEL_1_8);
     }
+
+
 
 }
