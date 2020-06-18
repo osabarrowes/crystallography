@@ -4,8 +4,10 @@ import crystallography.init.ModBlocks;
 import crystallography.init.ModItems;
 import crystallography.init.ModTileEntityTypes;
 import crystallography.libs.Util;
+import crystallography.libs.multiblock.MultiBlockComponent;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -50,6 +52,7 @@ public class TestControllerBlockTileEntity extends TileEntity{
     public void setStructure(Collection<BlockPos> structure)
     {
         this.structure = structure;
+        // TODO set max capacity based on the number of fluid blocks
     }
 
     public Collection<BlockPos> getStructure()
@@ -61,7 +64,9 @@ public class TestControllerBlockTileEntity extends TileEntity{
 
     public void addItem(Item item, int count)
     {
-        vatData.add(item, count);
+
+         vatData.add(item, count);
+
     }
 
     //DEBUG
@@ -73,7 +78,13 @@ public class TestControllerBlockTileEntity extends TileEntity{
     private ItemStackHandler getHandler()
     {
         if (handler == null)
-            handler = new ItemStackHandler(2); // default constructor sets size to 1
+            handler = new ItemStackHandler(2) // default constructor sets size to 1
+            {
+                @Override
+                protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
+                    return 1;
+                }
+            };
         return handler;
     }
 
@@ -81,7 +92,13 @@ public class TestControllerBlockTileEntity extends TileEntity{
     public void read(CompoundNBT tag) {
         CompoundNBT invTag = tag.getCompound("inv");
         getHandler().deserializeNBT(invTag);
-        // TODO vatData
+        if (!this.checkLootAndRead(tag)) {
+            ItemStackHelper.loadAllItems(tag, this.data);
+        }
+
+         // TODO vatData
+        // CompoundNBT vatDataTag = tag.getCompound("vatData");
+        // vatData.deserializeNBT(vatDataTag);
 
         super.read(tag);
     }
@@ -91,6 +108,8 @@ public class TestControllerBlockTileEntity extends TileEntity{
         CompoundNBT compound = getHandler().serializeNBT();
         tag.put("inv", compound);
         // TODO vatData
+        // CompoundNBT compound = vatData.serializeNBT();
+        // tag.put("vatData", compound);
 
         return super.write(compound);
     }
@@ -106,6 +125,34 @@ public class TestControllerBlockTileEntity extends TileEntity{
 
     //DEBUG
     public void craft() {
+//        if(items.get(Items.IRON_ORE) != null && items.get(Items.IRON_ORE) > 0 && items.get(ModItems.EXAMPLE_ITEM) != null && items.get(ModItems.EXAMPLE_ITEM) > 0)
+//        {
+//            BlockPos crystallizingPos;
+//
+//            for (BlockPos p : structure)
+//            {
+//                if (getWorld().getBlockState(p).getBlock().equals(ModBlocks.NUCLEATION_BLOCK.get()))
+//                {
+//                    // check for any eligible neighbors, which include water or NotFluid
+//                    Map<Direction, Block> neighbors = Util.getNeighbors(getWorld(), p);
+//                    for(Direction d : neighbors.keySet())
+//                    {
+//                        if(neighbors.get(d).equals(Blocks.WATER) || neighbors.get(d).equals(ModBlocks.NOT_FLUID.get()))
+//                        {
+//                            crystallizingPos = p.offset(d);
+//
+//                            getWorld().setBlockState(crystallizingPos, ModBlocks.IRON_CRYSTAL_BLOCK.get().getDefaultState());
+//                            items.put(Items.IRON_ORE, items.get(Items.IRON_ORE) - 1);
+//                            items.put(ModItems.EXAMPLE_ITEM, items.get(ModItems.EXAMPLE_ITEM) - 1);
+//                            return;
+//                        }
+//                    }
+//                }
+//            }
+//            LOGGER.info("No valid crystallizing position was found.");
+//            return;
+//        }
+//        LOGGER.info("Insufficient crafting materials for recipe: IRON_CRYSTAL_BLOCK");
         vatData.craft();
     }
 
@@ -129,7 +176,7 @@ public class TestControllerBlockTileEntity extends TileEntity{
 
         public void setSize(int size)
         {
-            stacks = NonNullList.withSize(size, ItemStack.EMPTY);
+            maxSize = size;
         }
 
         public void add(Item item, int count)
@@ -222,3 +269,4 @@ public class TestControllerBlockTileEntity extends TileEntity{
         }
     }
 }
+
