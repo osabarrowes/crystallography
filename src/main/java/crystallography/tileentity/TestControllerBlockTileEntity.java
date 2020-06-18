@@ -107,7 +107,6 @@ public class TestControllerBlockTileEntity extends TileEntity{
     //DEBUG
     public void craft() {
         vatData.craft();
-
     }
 
     private class VatData implements INBTSerializable<CompoundNBT>
