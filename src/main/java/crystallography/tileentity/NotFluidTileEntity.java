@@ -1,10 +1,12 @@
 package crystallography.tileentity;
 
 import crystallography.init.ModTileEntityTypes;
+import crystallography.libs.Util;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.LogManager;
@@ -23,29 +25,34 @@ public class NotFluidTileEntity extends TileEntity {
     public void onEntityCollision(Entity entityIn) {
         if (entityIn instanceof ItemEntity) {
 
-            if (/* TODO valid item */ true) {
+            if (Util.validVatIngredient(entityIn)) {
 
                 //inform the controller
                 ItemStack itemstack = ((ItemEntity) entityIn).getItem();
-                Item item = itemstack.getItem();
-                int count = itemstack.getCount();
 
                 if(controllerPos==null)
                     return; // stop, you have violated the law
                 // It would probably be good to know why controllerPos is null on the second time around.
                 // It would probably be good to know why there's a second time around in the first place
+                // FIXME
 
                 TileEntity controllerTE = this.getWorld().getTileEntity(controllerPos);
                 if(controllerTE instanceof TestControllerBlockTileEntity)
                 {
-                    ((TestControllerBlockTileEntity) controllerTE).addItem(item, count);
+                    itemstack = ((TestControllerBlockTileEntity) controllerTE).addItem(itemstack);
                 }
                 else {
                     LOGGER.warn("this is bad. controllerPos pointed to something that was not a controller...");
                 }
 
-                //consume the item
-                entityIn.remove();
+                if(itemstack.isEmpty()) {
+                    ((ItemEntity) entityIn).setItem(ItemStack.EMPTY);
+                    entityIn.remove();
+                }
+                else {
+                    ((ItemEntity) entityIn).setItem(itemstack);
+                    LOGGER.info("Item=" + itemstack.getItem() + ", count=" + itemstack.getCount());
+                }
             }
         }
     }

@@ -38,6 +38,8 @@ public class TestControllerBlockTileEntity extends TileEntity{
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String INVENTORY_TAG = "vat_data";
+    private static final int IRON_ORE_SLOT = 0;
+    private static final int IRON_CATALYST_SLOT = 1;
 
     private Collection<BlockPos> structure;
 
@@ -48,10 +50,17 @@ public class TestControllerBlockTileEntity extends TileEntity{
     // Store the capability lazy optionals as fields to keep the amount of objects we use to a minimum
     private final LazyOptional<ItemStackHandler> inventoryCapabilityExternal = LazyOptional.of(() -> this.inventory);
 
-    public final ItemStackHandler inventory = new ItemStackHandler(1) {
+    public final ItemStackHandler inventory = new ItemStackHandler() {
         @Override
         public boolean isItemValid(final int slot, @Nonnull final ItemStack stack) {
             return true;
+        }
+
+        @Override
+        public void setSize(int size) {
+            super.setSize(2);
+            // TODO the capacity should be based off the number of fluid blocks in structure
+            // However, the size should be enough to accommodate all the potential ores and catalysts...
         }
 
         @Override
@@ -81,11 +90,18 @@ public class TestControllerBlockTileEntity extends TileEntity{
         return structure;
     }
 
-    public void addItem(Item item, int count)
+    /**
+     * Attempts to place the passed stack into the vat, taking into account the capacity of the vat and any currently dissolved
+     * items. Returns stack of leftover items.
+     */
+    public ItemStack addItem(ItemStack stack)
     {
 
-         vatData.add(item, count);
-
+        LOGGER.info("before: Item=" + stack.getItem() + ", count=" + stack.getCount());
+        stack = inventory.insertItem(IRON_ORE_SLOT, stack, false); // TODO item type checking, currently hardcoded to iron ore slot
+        LOGGER.info("after: Item=" + stack.getItem() + ", count=" + stack.getCount());
+        return stack;
+        // vatData.add(stack.getItem(), stack.getCount());
     }
 
     //DEBUG
@@ -191,7 +207,7 @@ public class TestControllerBlockTileEntity extends TileEntity{
             else
                 items.put(item, count);
 
-            LOGGER.info("I received data. Item: " + item + ", count: " + count);
+            // LOGGER.info("I received data. Item: " + item + ", count: " + count);
         }
 
         @Override
