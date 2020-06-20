@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
@@ -36,6 +37,7 @@ import java.util.Map;
 public class TestControllerBlockTileEntity extends TileEntity{
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final String INVENTORY_TAG = "vat_data";
 
     private Collection<BlockPos> structure;
 
@@ -43,7 +45,24 @@ public class TestControllerBlockTileEntity extends TileEntity{
 
     private VatData vatData = new VatData();
 
-    private ItemStackHandler handler;
+    // Store the capability lazy optionals as fields to keep the amount of objects we use to a minimum
+    private final LazyOptional<ItemStackHandler> inventoryCapabilityExternal = LazyOptional.of(() -> this.inventory);
+
+    public final ItemStackHandler inventory = new ItemStackHandler(1) {
+        @Override
+        public boolean isItemValid(final int slot, @Nonnull final ItemStack stack) {
+            return true;
+        }
+
+        @Override
+        protected void onContentsChanged(final int slot) {
+            super.onContentsChanged(slot);
+            // Mark the tile entity as having changed whenever its inventory changes.
+            // "markDirty" tells vanilla that the chunk containing the tile entity has
+            // changed and means the game will save the chunk to disk later.
+            markDirty();
+        }
+    };
 
     public TestControllerBlockTileEntity() {
         super(ModTileEntityTypes.TEST_CONTROLLER_BLOCK_TILE_ENTITY.get());
@@ -75,50 +94,36 @@ public class TestControllerBlockTileEntity extends TileEntity{
         vatData.reportContents();
     }
 
-    private ItemStackHandler getHandler()
-    {
-        if (handler == null)
-            handler = new ItemStackHandler(2) // default constructor sets size to 1
-            {
-                @Override
-                protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
-                    return 1;
-                }
-            };
-        return handler;
-    }
-
+    /**
+     * Read saved data from disk into the tile.
+     */
     @Override
     public void read(CompoundNBT tag) {
-        CompoundNBT invTag = tag.getCompound("inv");
-        getHandler().deserializeNBT(invTag);
-        if (!this.checkLootAndRead(tag)) {
-            ItemStackHelper.loadAllItems(tag, this.data);
-        }
-
-         // TODO vatData
+        super.read(tag); // does this go before or after?
+        this.inventory.deserializeNBT(tag.getCompound(INVENTORY_TAG));
+        // TODO vatData
         // CompoundNBT vatDataTag = tag.getCompound("vatData");
         // vatData.deserializeNBT(vatDataTag);
-
-        super.read(tag);
     }
 
+    /**
+     * Write data from the tile into a compound tag for saving to disk.
+     */
     @Override
     public CompoundNBT write(CompoundNBT tag) {
-        CompoundNBT compound = getHandler().serializeNBT();
-        tag.put("inv", compound);
+        super.write(tag); // does this go before or after?
+        tag.put(INVENTORY_TAG, inventory.serializeNBT());
         // TODO vatData
         // CompoundNBT compound = vatData.serializeNBT();
         // tag.put("vatData", compound);
-
-        return super.write(compound);
+        return tag;
     }
 
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return LazyOptional.of(() -> (T) getHandler());
+            return inventoryCapabilityExternal.cast();
         }
         return super.getCapability(cap, side);
     }
