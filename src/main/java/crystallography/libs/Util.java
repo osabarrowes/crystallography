@@ -1,5 +1,6 @@
 package crystallography.libs;
 
+import crystallography.init.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -38,5 +39,18 @@ public class Util {
 
     public static boolean validVatIngredient(Entity entityIn) {
         return true;
+    }
+
+    /**
+     * Counts the number of fluid blocks in a given multiblock structure.
+     */
+    public static int fluidCount(Collection<BlockPos> structure, World world) {
+        int fluidCount = 0;
+        for(BlockPos pos : structure)
+        {
+            if (world.getBlockState(pos).getBlock().equals(ModBlocks.NOT_FLUID.get()))
+                fluidCount++;
+        }
+        return fluidCount;
     }
 }
