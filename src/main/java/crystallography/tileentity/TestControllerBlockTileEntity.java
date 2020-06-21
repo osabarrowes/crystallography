@@ -11,9 +11,12 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.AbstractCookingRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 import net.minecraft.tileentity.FurnaceTileEntity;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
@@ -34,12 +37,17 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TestControllerBlockTileEntity extends TileEntity{
+public class TestControllerBlockTileEntity extends TileEntity implements ITickableTileEntity {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String INVENTORY_TAG = "vat_data";
     private static final int IRON_ORE_SLOT = 0;
     private static final int IRON_CATALYST_SLOT = 1;
+
+    /**
+     * Keeps track of all currently progressing reactions in the vat.
+     */
+    private ArrayList<Integer> reactions = new ArrayList<>();
 
     private Collection<BlockPos> structure;
 
@@ -141,9 +149,35 @@ public class TestControllerBlockTileEntity extends TileEntity{
         return super.getCapability(cap, side);
     }
 
+    // copied from cadiboo, this will probably be helpful for determining reaction time
+//    /**
+//     * Mimics the code in {@link AbstractFurnaceTileEntity#func_214005_h()}
+//     *
+//     * @return The custom smelt time or 200 if there is no recipe for the input
+//     */
+//    private short getSmeltTime(final ItemStack input) {
+//        return getRecipe(input)
+//                .map(AbstractCookingRecipe::getCookTime)
+//                .orElse(200)
+//                .shortValue();
+//    }
+
+    /**
+     * Called once per tick.
+     */
+    @Override
+    public void tick() {
+        if(!world.isRemote) {
+            LOGGER.info(world.getGameTime());
+        }
+
+    }
+
+
+
     //DEBUG
-    public void craft() {
-//        if(items.get(Items.IRON_ORE) != null && items.get(Items.IRON_ORE) > 0 && items.get(ModItems.EXAMPLE_ITEM) != null && items.get(ModItems.EXAMPLE_ITEM) > 0)
+//    public void craft() {
+//        if(!inventory.getStackInSlot(IRON_ORE_SLOT).isEmpty() && !inventory.getStackInSlot(IRON_CATALYST_SLOT).isEmpty())
 //        {
 //            BlockPos crystallizingPos;
 //
@@ -171,7 +205,7 @@ public class TestControllerBlockTileEntity extends TileEntity{
 //            return;
 //        }
 //        LOGGER.info("Insufficient crafting materials for recipe: IRON_CRYSTAL_BLOCK");
-
-    }
+//
+//    }
 }
 
