@@ -6,6 +6,7 @@ import crystallography.init.ModTileEntityTypes;
 import crystallography.libs.Util;
 import crystallography.libs.multiblock.MultiBlockComponent;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.Item;
@@ -106,11 +107,27 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
      */
     public ItemStack addItem(ItemStack stack)
     {
+        int before = stack.getCount();
+
         if(stack.getItem() == Items.IRON_ORE)
             stack = inventory.insertItem(IRON_ORE_SLOT, stack, false);
         if(stack.getItem() == ModItems.EXAMPLE_ITEM)
             stack = inventory.insertItem(IRON_CATALYST_SLOT, stack, false);
+
+        if(before != stack.getCount()) // something was inserted
+            checkCraft();
+
         return stack;
+    }
+
+    private void checkCraft() {
+        if(/*there enough ingredients to react*/ true) // TODO
+        {
+            // begin crafting the appropriate product
+            // TODO keyword appropriate
+            craft(IRON_ORE_SLOT);
+        }
+        return;
     }
 
     //DEBUG
@@ -168,44 +185,62 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
     @Override
     public void tick() {
         if(!world.isRemote) {
-            LOGGER.info(world.getGameTime());
+            // LOGGER.info(world.getGameTime());
         }
 
     }
 
-
-
     //DEBUG
-//    public void craft() {
-//        if(!inventory.getStackInSlot(IRON_ORE_SLOT).isEmpty() && !inventory.getStackInSlot(IRON_CATALYST_SLOT).isEmpty())
-//        {
-//            BlockPos crystallizingPos;
-//
-//            for (BlockPos p : structure)
-//            {
-//                if (getWorld().getBlockState(p).getBlock().equals(ModBlocks.NUCLEATION_BLOCK.get()))
-//                {
-//                    // check for any eligible neighbors, which include water or NotFluid
-//                    Map<Direction, Block> neighbors = Util.getNeighbors(getWorld(), p);
-//                    for(Direction d : neighbors.keySet())
-//                    {
-//                        if(neighbors.get(d).equals(Blocks.WATER) || neighbors.get(d).equals(ModBlocks.NOT_FLUID.get()))
-//                        {
-//                            crystallizingPos = p.offset(d);
-//
-//                            getWorld().setBlockState(crystallizingPos, ModBlocks.IRON_CRYSTAL_BLOCK.get().getDefaultState());
-//                            items.put(Items.IRON_ORE, items.get(Items.IRON_ORE) - 1);
-//                            items.put(ModItems.EXAMPLE_ITEM, items.get(ModItems.EXAMPLE_ITEM) - 1);
-//                            return;
-//                        }
-//                    }
-//                }
-//            }
-//            LOGGER.info("No valid crystallizing position was found.");
-//            return;
-//        }
-//        LOGGER.info("Insufficient crafting materials for recipe: IRON_CRYSTAL_BLOCK");
-//
-//    }
+    public void craft(int slot) {
+        // This method represents a hard coded solution, but minecraft uses json to store its recipies, including smelt times,
+        // ingredients, and outputs. You should probably use that system instead.
+        /*
+         * whenever an ingredient is added to the vat, check if there are enough ingredients to begin a reaction.
+         *  if there aren't, do nothing.
+         *  if there are, use the rate equation for the specific ingredient to determine how long it will take.
+         *   this time value should be in ticks.
+         *  after this amount of time has passed, pick an available nucleation site and place a crystal there.
+         *   each tick, reduce the time remaining for this reaction by one.
+         *   when time remaining is less than one, place the crystal and stop counting down.
+         */
+        if(!inventory.getStackInSlot(slot).isEmpty())
+        {
+            BlockPos crystallizingPos;
+
+            for (BlockPos p : structure)
+            {
+                if (getWorld().getBlockState(p).getBlock().equals(ModBlocks.NUCLEATION_BLOCK.get()))
+                {
+                    // check for any eligible neighbors, which include water or NotFluid
+                    Map<Direction, Block> neighbors = Util.getNeighbors(getWorld(), p);
+                    for(Direction d : neighbors.keySet())
+                    {
+                        if(neighbors.get(d).equals(Blocks.WATER) || neighbors.get(d).equals(ModBlocks.NOT_FLUID.get()))
+                        {
+                            crystallizingPos = p.offset(d);
+
+                            getWorld().setBlockState(crystallizingPos, product(slot));
+                            inventory.extractItem(slot, 1, false);
+                            return;
+                        }
+                    }
+                }
+            }
+            LOGGER.info("No valid crystallizing position was found.");
+            return;
+        }
+        LOGGER.info("Insufficient crafting materials for recipe: IRON_CRYSTAL_BLOCK");
+
+    }
+
+    private BlockState product(int slot) {
+        switch (slot)
+        {
+            case IRON_ORE_SLOT:
+                return ModBlocks.IRON_CRYSTAL_BLOCK.get().getDefaultState();
+            default:
+                return ModBlocks.NOT_FLUID.get().getDefaultState();
+        }
+    }
 }
 
