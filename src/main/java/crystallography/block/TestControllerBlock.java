@@ -55,8 +55,8 @@ public class TestControllerBlock extends ControllerBlock {
 //                        LOGGER.info("Component " + worldIn.getBlockState(component).getBlock() + " found at " + component);
 //                    LOGGER.info("Found a total of " + ((TestControllerBlockTileEntity) myTE).getStructure().size() + " components");
                     ((TestControllerBlockTileEntity) myTE).reportContents();
-                    ((TestControllerBlockTileEntity) myTE).craft();
-                    ((TestControllerBlockTileEntity) myTE).reportContents();
+                    // ((TestControllerBlockTileEntity) myTE).craft();
+                    // ((TestControllerBlockTileEntity) myTE).reportContents();
                 }
                 return ActionResultType.SUCCESS;
             }

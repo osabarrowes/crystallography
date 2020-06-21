@@ -40,6 +40,10 @@ public class TestControllerBlockTileEntity extends TileEntity{
     private static final String INVENTORY_TAG = "vat_data";
     private static final int IRON_ORE_SLOT = 0;
     private static final int IRON_CATALYST_SLOT = 1;
+//    private static final int SLOTS[] = {
+//            IRON_ORE_SLOT,
+//            IRON_CATALYST_SLOT
+//    };
 
     private Collection<BlockPos> structure;
 
@@ -50,17 +54,12 @@ public class TestControllerBlockTileEntity extends TileEntity{
     // Store the capability lazy optionals as fields to keep the amount of objects we use to a minimum
     private final LazyOptional<ItemStackHandler> inventoryCapabilityExternal = LazyOptional.of(() -> this.inventory);
 
-    public final ItemStackHandler inventory = new ItemStackHandler() {
+
+    // the size should be enough to accommodate all the potential ores and catalysts
+    public final ItemStackHandler inventory = new ItemStackHandler( 2) {
         @Override
         public boolean isItemValid(final int slot, @Nonnull final ItemStack stack) {
-            return true;
-        }
-
-        @Override
-        public void setSize(int size) {
-            super.setSize(2);
-            // TODO the capacity should be based off the number of fluid blocks in structure
-            // However, the size should be enough to accommodate all the potential ores and catalysts...
+            return stack.getItem() == Items.IRON_ORE || stack.getItem() == ModItems.EXAMPLE_ITEM; // FIXME return true if it is an ore or a catalyst
         }
 
         @Override
@@ -70,6 +69,18 @@ public class TestControllerBlockTileEntity extends TileEntity{
             // "markDirty" tells vanilla that the chunk containing the tile entity has
             // changed and means the game will save the chunk to disk later.
             markDirty();
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            if (getStackInSlot(slot).getItem().equals(Items.IRON_ORE)) {
+                return Util.fluidCount(structure, world);
+            }
+            if (getStackInSlot(slot).getItem().equals(ModItems.EXAMPLE_ITEM)) {
+                return Util.fluidCount(structure, world) * 8; // FIXME ItemStacks which have a max stack size of 64 aren't able to exceed that, even though it should according to this
+            }
+            return 64;
+
         }
     };
 
@@ -97,9 +108,15 @@ public class TestControllerBlockTileEntity extends TileEntity{
     public ItemStack addItem(ItemStack stack)
     {
 
-        LOGGER.info("before: Item=" + stack.getItem() + ", count=" + stack.getCount());
-        stack = inventory.insertItem(IRON_ORE_SLOT, stack, false); // TODO item type checking, currently hardcoded to iron ore slot
-        LOGGER.info("after: Item=" + stack.getItem() + ", count=" + stack.getCount());
+
+        // LOGGER.info("before: Item=" + stack.getItem() + ", count=" + stack.getCount());
+
+        if(stack.getItem() == Items.IRON_ORE)
+            stack = inventory.insertItem(IRON_ORE_SLOT, stack, false);
+        if(stack.getItem() == ModItems.EXAMPLE_ITEM)
+            stack = inventory.insertItem(IRON_CATALYST_SLOT, stack, false);
+
+        // LOGGER.info("after: Item=" + stack.getItem() + ", count=" + stack.getCount());
         return stack;
         // vatData.add(stack.getItem(), stack.getCount());
     }
@@ -107,7 +124,13 @@ public class TestControllerBlockTileEntity extends TileEntity{
     //DEBUG
     public void reportContents()
     {
-        vatData.reportContents();
+        LOGGER.info("ItemStackHandler Contents");
+        for(int i = 0; i < inventory.getSlots(); i++)
+        {
+            LOGGER.info("Item=" + inventory.getStackInSlot(i).getItem() + ", count=" + inventory.getStackInSlot(i).getCount());
+        }
+
+        // vatData.reportContents();
     }
 
     /**
