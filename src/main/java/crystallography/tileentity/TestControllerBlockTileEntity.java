@@ -1,30 +1,21 @@
 package crystallography.tileentity;
 
+import com.mojang.datafixers.types.DynamicOps;
 import crystallography.init.ModBlocks;
 import crystallography.init.ModItems;
 import crystallography.init.ModTileEntityTypes;
 import crystallography.libs.Util;
-import crystallography.libs.multiblock.MultiBlockComponent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.AbstractCookingRecipe;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.AbstractFurnaceTileEntity;
-import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -35,26 +26,21 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+
+import java.util.HashSet;
 import java.util.Map;
 
 public class TestControllerBlockTileEntity extends TileEntity implements ITickableTileEntity {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String INVENTORY_TAG = "vat_data";
+    private static final String STRUCTURE_TAG = "structure";
     private static final int IRON_ORE_SLOT = 0;
     private static final int IRON_CATALYST_SLOT = 1;
-
-    /**
-     * Keeps track of all currently progressing reactions in the vat.
-     */
-    private ArrayList<Integer> reactions = new ArrayList<>();
-
     private Collection<BlockPos> structure;
 
     // Store the capability lazy optionals as fields to keep the amount of objects we use to a minimum
     private final LazyOptional<ItemStackHandler> inventoryCapabilityExternal = LazyOptional.of(() -> this.inventory);
-
 
     // the size should be enough to accommodate all the potential ores and catalysts
     public final ItemStackHandler inventory = new ItemStackHandler( 2) {
@@ -88,6 +74,7 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
 
     public TestControllerBlockTileEntity() {
         super(ModTileEntityTypes.TEST_CONTROLLER_BLOCK_TILE_ENTITY.get());
+
     }
 
     public void setStructure(Collection<BlockPos> structure)
@@ -136,6 +123,9 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
         LOGGER.info("ItemStackHandler Contents");
         for(int i = 0; i < inventory.getSlots(); i++)
             LOGGER.info("Item=" + inventory.getStackInSlot(i).getItem() + ", count=" + inventory.getStackInSlot(i).getCount());
+        LOGGER.info("Structure size:" + structure.size());
+//        for(BlockPos p : structure)
+//            LOGGER.info(p);
     }
 
     /**
@@ -145,6 +135,7 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
     public void read(CompoundNBT tag) {
         super.read(tag);
         this.inventory.deserializeNBT(tag.getCompound(INVENTORY_TAG));
+        this.structure = structureDeserialize(tag.getCompound(STRUCTURE_TAG));
     }
 
     /**
@@ -154,7 +145,36 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
     public CompoundNBT write(CompoundNBT tag) {
         super.write(tag);
         tag.put(INVENTORY_TAG, inventory.serializeNBT());
+        tag.put(STRUCTURE_TAG, structureSerialize(structure));
         return tag;
+    }
+
+    private CompoundNBT structureSerialize(Collection<BlockPos> structure) {
+        CompoundNBT tag = new CompoundNBT();
+        int i = 0;
+        for(BlockPos p : structure)
+        {
+            byte data[] = {(byte)p.getX(), (byte)p.getY(), (byte)p.getZ()};
+            tag.putByteArray(""+i, data);
+            // I'm not sure how vanilla handles BlockPos serialization, so I'm doing it myself
+            i++;
+        }
+        tag.putInt("structureSize", i);
+        return tag;
+    }
+
+    private Collection<BlockPos> structureDeserialize(CompoundNBT tag) {
+        Collection<BlockPos> structure = new HashSet<>();
+        int size = tag.getInt("structureSize");
+        byte data[];
+        BlockPos pos;
+        for(int i = 0; i < size; i++)
+        {
+            data = tag.getByteArray(""+i);
+            pos = new BlockPos(data[0],data[1],data[2]);
+            structure.add(pos);
+        }
+        return structure;
     }
 
     @Nonnull
