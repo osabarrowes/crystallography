@@ -208,6 +208,17 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
 
     }
 
+    /**
+     * Invalidates our tile entity
+     */
+    @Override
+    public void remove() {
+        super.remove();
+        // We need to invalidate our capability references so that any cached references (by other mods) don't
+        // continue to reference our capabilities and try to use them and/or prevent them from being garbage collected
+        inventoryCapabilityExternal.invalidate();
+    }
+
     //DEBUG
     public void craft(int slot) {
         // This method represents a hard coded solution, but minecraft uses json to store its recipies, including smelt times,
