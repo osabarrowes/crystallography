@@ -7,6 +7,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.LogManager;
@@ -65,6 +66,27 @@ public class NotFluidTileEntity extends TileEntity {
     public BlockPos getControllerPos()
     {
         return controllerPos;
+    }
+
+    /**
+     * Read saved data from disk into the tile entity.
+     */
+    @Override
+    public void read(CompoundNBT tag) {
+        super.read(tag);
+        byte data[] = tag.getByteArray("controllerPos");
+        controllerPos = new BlockPos(data[0], data[1], data[2]);
+    }
+
+    /**
+     * Write data from the tile entity into a compound tag for saving to disk.
+     */
+    @Override
+    public CompoundNBT write(CompoundNBT tag) {
+        super.write(tag);
+        byte data[] = {(byte)controllerPos.getX(), (byte)controllerPos.getY(), (byte)controllerPos.getZ()};
+        tag.putByteArray("controllerPos", data);
+        return tag;
     }
 
 }

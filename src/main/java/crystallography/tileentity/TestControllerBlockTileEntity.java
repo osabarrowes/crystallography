@@ -124,8 +124,6 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
         for(int i = 0; i < inventory.getSlots(); i++)
             LOGGER.info("Item=" + inventory.getStackInSlot(i).getItem() + ", count=" + inventory.getStackInSlot(i).getCount());
         LOGGER.info("Structure size:" + structure.size());
-//        for(BlockPos p : structure)
-//            LOGGER.info(p);
     }
 
     /**
