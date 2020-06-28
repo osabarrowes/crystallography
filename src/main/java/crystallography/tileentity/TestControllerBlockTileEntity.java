@@ -216,7 +216,7 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
         super.remove();
         // We need to invalidate our capability references so that any cached references (by other mods) don't
         // continue to reference our capabilities and try to use them and/or prevent them from being garbage collected
-        inventoryCapabilityExternal.invalidate();
+        inventoryCapabilityExternal.invalidate(); // I believe that super already does this.
     }
 
     //DEBUG

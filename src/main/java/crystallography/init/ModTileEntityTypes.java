@@ -1,6 +1,7 @@
 package crystallography.init;
 
 import crystallography.Crystallography;
+import crystallography.libs.tileentity.MultiBlockComponentTileEntity;
 import crystallography.tileentity.NotFluidTileEntity;
 import crystallography.tileentity.NucleationBlockTileEntity;
 import crystallography.tileentity.TestControllerBlockTileEntity;
@@ -8,7 +9,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.objectweb.asm.commons.JSRInlinerAdapter;
 
 /**
  * Holds a list of all our {@link TileEntityType}s.
@@ -39,5 +39,9 @@ public class ModTileEntityTypes {
 
     public static final RegistryObject<TileEntityType<NotFluidTileEntity>> NOT_FLUID_TILE_ENTITY = TILE_ENTITY_TYPES.register("not_fluid_tile_entity", () ->
             TileEntityType.Builder.create(NotFluidTileEntity::new, ModBlocks.NOT_FLUID.get()).build(null)
+    );
+
+    public static final RegistryObject<TileEntityType<MultiBlockComponentTileEntity>> TEST_BLOCK_TILE_ENTITY = TILE_ENTITY_TYPES.register("test_block_tile_entity", () ->
+            TileEntityType.Builder.create(MultiBlockComponentTileEntity::new, ModBlocks.TEST_BLOCK.get()).build(null)
     );
 }

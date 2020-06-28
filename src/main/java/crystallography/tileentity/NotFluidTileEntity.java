@@ -2,26 +2,23 @@ package crystallography.tileentity;
 
 import crystallography.init.ModTileEntityTypes;
 import crystallography.libs.Util;
+import crystallography.libs.tileentity.MultiBlockComponentTileEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class NotFluidTileEntity extends TileEntity {
+public class NotFluidTileEntity extends MultiBlockComponentTileEntity {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     public NotFluidTileEntity() {
         super(ModTileEntityTypes.NOT_FLUID_TILE_ENTITY.get());
     }
-
-    private BlockPos controllerPos;
 
     public void onEntityCollision(Entity entityIn) {
         if (entityIn instanceof ItemEntity) {
@@ -33,9 +30,12 @@ public class NotFluidTileEntity extends TileEntity {
 
                 if(controllerPos==null)
                     return; // stop, you have violated the law
-                // It would probably be good to know why controllerPos is null on the second time around.
-                // It would probably be good to know why there's a second time around in the first place
-                // FIXME
+                /* FIXME
+                 * It would probably be good to know why controllerPos is null on the second time around.
+                 * It would probably be good to know why there's a second time around in the first place.
+                 * What I mean is that onEntityCollision is called twice when an entity colldies with the block, and for
+                 * some reason controllerPos is null on the second time.
+                 */
 
                 TileEntity controllerTE = this.getWorld().getTileEntity(controllerPos);
                 if(controllerTE instanceof TestControllerBlockTileEntity)
@@ -56,16 +56,6 @@ public class NotFluidTileEntity extends TileEntity {
                 }
             }
         }
-    }
-
-    public void setControllerPos(BlockPos pos)
-    {
-        controllerPos = pos;
-    }
-
-    public BlockPos getControllerPos()
-    {
-        return controllerPos;
     }
 
     /**
