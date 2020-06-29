@@ -1,12 +1,14 @@
 package crystallography.libs.multiblock;
 
 import crystallography.libs.Util;
+import crystallography.libs.tileentity.MultiBlockComponentTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -174,6 +176,29 @@ public abstract class MultiBlockComponent extends Block{
                 count++;
         }
         return count;
+    }
+
+    /**
+     * Called when a neighbor of the block changes.
+     * @param state my blockState
+     * @param pos my position
+     * @param blockIn the block that changed, before it changed
+     * @param fromPos the position of the block that changed
+     */
+    // Overriding deprecated methods is bad practice, but this method is called by BlockState#neighborChanged, so...
+    @Override
+    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+        if (state.get(VALID)) {
+            TileEntity myTE = worldIn.getTileEntity(pos);
+            if (myTE instanceof MultiBlockComponentTileEntity) {
+                LOGGER.info("hello from neighborChanged~ my position is " + pos);
+                LOGGER.info("beginning revalidation process...");
+                // TileEntity t = worldIn.getTileEntity(pos);
+                ((MultiBlockComponentTileEntity) myTE).invalidateController();
+            }
+        }
+
+        super.neighborChanged(state, worldIn, pos, blockIn, fromPos, isMoving);
     }
 
     /**

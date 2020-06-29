@@ -24,11 +24,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 public class TestControllerBlockTileEntity extends TileEntity implements ITickableTileEntity {
 
@@ -37,7 +33,7 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
     private static final String STRUCTURE_TAG = "structure";
     private static final int IRON_ORE_SLOT = 0;
     private static final int IRON_CATALYST_SLOT = 1;
-    private Collection<BlockPos> structure;
+    private Set<BlockPos> structure;
 
     // Store the capability lazy optionals as fields to keep the amount of objects we use to a minimum
     private final LazyOptional<ItemStackHandler> inventoryCapabilityExternal = LazyOptional.of(() -> this.inventory);
@@ -77,15 +73,15 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
 
     }
 
-    public void setStructure(Collection<BlockPos> structure)
+    public void setStructure(Set<BlockPos> structure)
     {
         this.structure = structure;
     }
 
-    public Collection<BlockPos> getStructure()
+    public Set<BlockPos> getStructure()
     {
         if(structure == null)
-            return new ArrayList<>(); // why are you calling me without having a structure?
+            return new HashSet<>(); // why are you calling me without having a structure?
         return structure;
     }
 
@@ -161,8 +157,8 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
         return tag;
     }
 
-    private Collection<BlockPos> structureDeserialize(CompoundNBT tag) {
-        Collection<BlockPos> structure = new HashSet<>();
+    private Set<BlockPos> structureDeserialize(CompoundNBT tag) {
+        Set<BlockPos> structure = new HashSet<>();
         int size = tag.getInt("structureSize");
         byte data[];
         BlockPos pos;

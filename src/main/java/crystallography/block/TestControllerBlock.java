@@ -40,6 +40,45 @@ public class TestControllerBlock extends ControllerBlock {
         return new TestControllerBlockTileEntity();
     }
 
+    public void validateStructure(World worldIn, BlockPos pos)
+    {
+        Set<BlockPos> structure;
+        BlockState newState;
+        if(worldIn.getBlockState(pos).get(VALID))
+        {
+            TileEntity myTE = worldIn.getTileEntity(pos);
+            if (myTE instanceof TestControllerBlockTileEntity) // SAFETY
+            {
+                structure = ((TestControllerBlockTileEntity) myTE).getStructure();
+            }
+            else
+            {
+                LOGGER.info("something has gone wrong");
+                return;
+            }
+        }
+        else
+            structure = new HashSet<>();
+
+        if (imValid(worldIn, pos, structure)) {
+            for (BlockPos component : structure) {
+                newState = worldIn.getBlockState(component).with(VALID, true);
+                worldIn.setBlockState(component, newState, 2); // Flag 2: send the change to clients
+            }
+        } else {
+            for (BlockPos component : structure) {
+                newState = worldIn.getBlockState(component).with(VALID, false);
+                worldIn.setBlockState(component, newState, 2);
+            }
+        }
+
+        TileEntity myTE = worldIn.getTileEntity(pos);
+        if (myTE instanceof TestControllerBlockTileEntity) // SAFETY
+        {
+            ((TestControllerBlockTileEntity) myTE).setStructure(structure);
+        }
+    }
+
     @Override
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
     {
@@ -62,31 +101,7 @@ public class TestControllerBlock extends ControllerBlock {
             }
             //end debug
 
-            Set<BlockPos> structure = new HashSet<>();
-            BlockState newState;
-
-            if(imValid(worldIn, pos, structure))
-            {
-                for(BlockPos component : structure)
-                {
-                    newState = worldIn.getBlockState(component).with(VALID, true);
-                    worldIn.setBlockState(component, newState, 2); // Flag 2: send the change to clients
-                }
-            }
-            else
-            {
-                for(BlockPos component : structure)
-                {
-                    newState = worldIn.getBlockState(component).with(VALID, false);
-                    worldIn.setBlockState(component, newState, 2);
-                }
-            }
-
-            TileEntity myTE = worldIn.getTileEntity(pos);
-            if(myTE instanceof TestControllerBlockTileEntity) // SAFETY
-            {
-                ((TestControllerBlockTileEntity) myTE).setStructure(structure);
-            }
+            validateStructure(worldIn, pos);
         }
         return ActionResultType.SUCCESS; // imValid can help determine what the return type should be, but I don't know how return types for this works right now
     }
@@ -118,4 +133,5 @@ public class TestControllerBlock extends ControllerBlock {
 
         return value && super.isValid(worldIn, pos, structure);
     }
+
 }

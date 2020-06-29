@@ -53,7 +53,7 @@ public class TestBlock extends MultiBlockComponent {
         // DEBUG
         if (worldIn.getBlockState(pos).get(VALID))
         {
-            onBlockHarvested(worldIn, pos, state, player, true);
+
         }
         else
         {
@@ -98,16 +98,5 @@ public class TestBlock extends MultiBlockComponent {
 
         return returnValue;
 
-    }
-
-    // @Override
-    public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player, boolean flag) {
-        if (state.get(VALID)) {
-            TileEntity myTE = worldIn.getTileEntity(pos);
-            if (myTE instanceof MultiBlockComponentTileEntity) {
-                ((MultiBlockComponentTileEntity) myTE).invalidateController();
-            }
-        }
-        super.onBlockHarvested(worldIn, pos, state, player);
     }
 }
