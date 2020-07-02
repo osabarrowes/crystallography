@@ -1,0 +1,9 @@
+{
+	"type": "crystallography:reaction",
+	"ingredient": {
+		"item": "minecraft:iron_ore"
+	},
+	"result": "crystallography:iron_crystal_block",
+	"catalyst": "crystallography:example_item",
+	"activationEnergy": 50
+}
