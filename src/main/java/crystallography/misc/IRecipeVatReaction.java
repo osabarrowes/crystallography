@@ -1,5 +1,6 @@
 package crystallography.misc;
 
+import crystallography.Crystallography;
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -15,8 +16,8 @@ import javax.annotation.Nullable;
 /**
  * Inspiration drawn from Botania's IManaInfusionRecipe, which I should note is placed in the API package of Botania
  */
-public interface IRecipeReaction extends IRecipe<IInventory> {
-    ResourceLocation TYPE_ID = new ResourceLocation(null, null); // FIXME
+public interface IRecipeVatReaction extends IRecipe<IInventory> {
+    ResourceLocation TYPE_ID = new ResourceLocation(Crystallography.MOD_ID, "vat_reaction"); // don't hardcode vat_reaction. DRY code is best
     // ResourceLocation TYPE_ID = new ResourceLocation(BotaniaAPI.MODID, "mana_infusion");
 
     boolean matches (ItemStack itemStack);

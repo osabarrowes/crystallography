@@ -1,0 +1,11 @@
+{
+	"type": "crystallography:vat_reaction",
+	"input": {
+		"item": "minecraft:iron_ore"
+	},
+	"product": {
+		"item": "crystallography:iron_crystal_block"
+	},
+	"catalyst": "crystallography:example_item",
+	"defaultCookTime": 300
+}
