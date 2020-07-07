@@ -8,7 +8,6 @@ import crystallography.Crystallography;
 import crystallography.init.ModRecipeTypes;
 import crystallography.misc.IRecipeVatReaction;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -47,11 +46,6 @@ public class RecipeVatReaction implements IRecipeVatReaction {
     }
 
     @Override
-    public boolean matches(ItemStack itemStack) {
-        return input.test(itemStack); // TODO what is this and how is it used
-    }
-
-    @Override
     public int getActivationEnergy() {
         return activationEnergy;
     }
@@ -59,12 +53,6 @@ public class RecipeVatReaction implements IRecipeVatReaction {
     @Override
     public Block getOutputBlock() {
         return output;
-    }
-
-    @Nullable
-    @Override
-    public BlockState getCatalyst() {
-        return null; // TODO what is this
     }
 
     @Override
@@ -87,14 +75,12 @@ public class RecipeVatReaction implements IRecipeVatReaction {
         return ModRecipeTypes.VAT_REACTION_SERIALIZER;
     }
 
-    // Copied from Botania's RecipeManaInfusion
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RecipeVatReaction> {
-        private static final ResourceLocation NAME = new ResourceLocation(Crystallography.MOD_ID, "vat_reaction"); // Vanilla has NAME, but botania doesn't. why?
-        // TODO this is how your JSON files are being serialized and deserialized, so don't copy botania's implementation
+        private static final ResourceLocation NAME = new ResourceLocation(Crystallography.MOD_ID, "vat_reaction");
         @Nonnull
         @Override
         public RecipeVatReaction read(@Nonnull ResourceLocation id, @Nonnull JsonObject json) {
-            JsonElement input = Objects.requireNonNull(json.get("input")); // why don't you need to do getItemStack? answer: Ingredint has deserialize(), ItemStack does not
+            JsonElement input = Objects.requireNonNull(json.get("input"));
             Ingredient ing = Ingredient.deserialize(input);
             ItemStack output = CraftingHelper.getItemStack(JSONUtils.getJsonObject(json, "output"), true);
             Block outputBlock = getBlockFromItem(output);
@@ -128,4 +114,5 @@ public class RecipeVatReaction implements IRecipeVatReaction {
                 throw new JsonParseException("Output in vat recipes must be of type BlockItem");
         }
     }
+
 }

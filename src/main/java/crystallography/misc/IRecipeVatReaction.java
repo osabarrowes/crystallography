@@ -2,7 +2,6 @@ package crystallography.misc;
 
 import crystallography.Crystallography;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -12,19 +11,15 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
 
 /**
- * Inspiration drawn from Botania's IManaInfusionRecipe, which I should note is placed in the API package of Botania
+ * @author xenonni
  */
 public interface IRecipeVatReaction extends IRecipe<IInventory> {
+    //Inspiration drawn from Botania's IManaInfusionRecipe, which I should note is placed in the API package of Botania.
+    // In other words this interface should go in an API package once things are a bit more orderly around here
     ResourceLocation TYPE_ID = new ResourceLocation(Crystallography.MOD_ID, "vat_reaction"); // don't hardcode vat_reaction. DRY code is best
-    // ResourceLocation TYPE_ID = new ResourceLocation(BotaniaAPI.MODID, "mana_infusion");
-
-    boolean matches (ItemStack itemStack);
-
-    @Nullable
-    BlockState getCatalyst();
 
     int getActivationEnergy();
 
