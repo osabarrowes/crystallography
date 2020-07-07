@@ -1,12 +1,15 @@
 package crystallography.common.crafting;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import crystallography.Crystallography;
 import crystallography.init.ModRecipeTypes;
 import crystallography.misc.IRecipeVatReaction;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
@@ -14,14 +17,12 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * @author xenonni
@@ -29,25 +30,35 @@ import java.util.Optional;
 public class RecipeVatReaction implements IRecipeVatReaction {
 
     private final ResourceLocation id;
-    private final ItemStack output;
+    private final Block output;
     private final Ingredient input;
     private final int activationEnergy;
     @Nullable
     private final String group;
 
-    public RecipeVatReaction(ResourceLocation id, ItemStack output, Ingredient input, int activationEnergy,
+    public RecipeVatReaction(ResourceLocation id, Block output, Ingredient input, int activationEnergy,
                              @Nullable String group) {
         this.id = id;
         this.output = output;
         this.input = input;
         this.activationEnergy = activationEnergy;
-        // Preconditions.checkArgument(activationEnergy > 0);
+        Preconditions.checkArgument(activationEnergy > 0);
         this.group = group == null ? "" : group; // groups are optional
     }
 
     @Override
     public boolean matches(ItemStack itemStack) {
         return input.test(itemStack); // TODO what is this and how is it used
+    }
+
+    @Override
+    public int getActivationEnergy() {
+        return activationEnergy;
+    }
+
+    @Override
+    public Block getOutputBlock() {
+        return output;
     }
 
     @Nullable
@@ -58,7 +69,7 @@ public class RecipeVatReaction implements IRecipeVatReaction {
 
     @Override
     public ItemStack getRecipeOutput() {
-        return output;
+        return new ItemStack(output.asItem());
     }
 
     @Override
@@ -83,12 +94,13 @@ public class RecipeVatReaction implements IRecipeVatReaction {
         @Nonnull
         @Override
         public RecipeVatReaction read(@Nonnull ResourceLocation id, @Nonnull JsonObject json) {
-            JsonElement input = Objects.requireNonNull(json.get("input")); // why don't you need to do getItemStack?
+            JsonElement input = Objects.requireNonNull(json.get("input")); // why don't you need to do getItemStack? answer: Ingredint has deserialize(), ItemStack does not
             Ingredient ing = Ingredient.deserialize(input);
-            ItemStack output = CraftingHelper.getItemStack(JSONUtils.getJsonObject(json, "output"), true); // because vanilla's IRecipe requires outputs to be of type ItemStack, output cannot be type Block.
+            ItemStack output = CraftingHelper.getItemStack(JSONUtils.getJsonObject(json, "output"), true);
+            Block outputBlock = getBlockFromItem(output);
             int defaultCookTime = JSONUtils.getInt(json, "defaultCookTime");
-            RecipeVatReaction ret = new RecipeVatReaction(id, output, ing, defaultCookTime, null);
-            return ret;
+            RecipeVatReaction rxn = new RecipeVatReaction(id, outputBlock, ing, defaultCookTime, null);
+            return rxn;
         }
 
         @Nullable
@@ -96,15 +108,24 @@ public class RecipeVatReaction implements IRecipeVatReaction {
         public RecipeVatReaction read(@Nonnull ResourceLocation id, @Nonnull PacketBuffer buf) {
             Ingredient input = Ingredient.read(buf);
             ItemStack output = buf.readItemStack();
+            Block outputBlock = getBlockFromItem(output);
             int defaultCookTime = buf.readVarInt();
-            return new RecipeVatReaction(id, output, input, defaultCookTime, null);
+            return new RecipeVatReaction(id, outputBlock, input, defaultCookTime, null);
         }
 
         @Override
         public void write(@Nonnull PacketBuffer buf, @Nonnull RecipeVatReaction recipe) {
             recipe.getIngredients().get(0).write(buf);
             buf.writeItemStack(recipe.getRecipeOutput(), false);
-            // buf.writeVarInt(recipe.getManaToConsume()); // FIXME
+            buf.writeVarInt(recipe.getActivationEnergy());
+        }
+
+        // because vanilla's IRecipe requires outputs to be of type ItemStack, output cannot be type Block.
+        private Block getBlockFromItem(ItemStack output) throws JsonParseException {
+            if (output.getItem() instanceof BlockItem)
+                return ((BlockItem) output.getItem()).getBlock();
+            else
+                throw new JsonParseException("Output in vat recipes must be of type BlockItem");
         }
     }
 }

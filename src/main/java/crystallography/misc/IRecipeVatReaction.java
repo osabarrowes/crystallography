@@ -1,6 +1,7 @@
 package crystallography.misc;
 
 import crystallography.Crystallography;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -25,7 +26,9 @@ public interface IRecipeVatReaction extends IRecipe<IInventory> {
     @Nullable
     BlockState getCatalyst();
 
-    // int getManaToConsume();
+    int getActivationEnergy();
+
+    Block getOutputBlock();
 
     @Nonnull
     @Override
