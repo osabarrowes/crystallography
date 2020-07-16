@@ -1,16 +1,24 @@
 package crystallography.tileentity;
 
-import com.mojang.datafixers.types.DynamicOps;
+import crystallography.common.crafting.RecipeVatReaction;
 import crystallography.init.ModBlocks;
 import crystallography.init.ModItems;
+import crystallography.init.ModRecipeTypes;
 import crystallography.init.ModTileEntityTypes;
+import crystallography.common.crafting.Solutes;
 import crystallography.libs.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.AbstractCookingRecipe;
+import net.minecraft.item.crafting.FurnaceRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -38,11 +46,11 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
     // Store the capability lazy optionals as fields to keep the amount of objects we use to a minimum
     private final LazyOptional<ItemStackHandler> inventoryCapabilityExternal = LazyOptional.of(() -> this.inventory);
 
-    // the size should be enough to accommodate all the potential ores and catalysts
-    public final ItemStackHandler inventory = new ItemStackHandler( 2) {
+    public final ItemStackHandler inventory = new ItemStackHandler( Solutes.countAllSolutes()) {
         @Override
         public boolean isItemValid(final int slot, @Nonnull final ItemStack stack) {
-            return stack.getItem() == Items.IRON_ORE || stack.getItem() == ModItems.EXAMPLE_ITEM; // FIXME return true if it is an ore or a catalyst
+            return Solutes.isAcceptedOre(stack.getItem()) || Solutes.isAcceptedCatalyst(stack.getItem()) || Solutes.isAcceptedMisc(stack.getItem());
+            // FIXME look at cadiboo's example mod for a better way to handle this
         }
 
         @Override
@@ -56,12 +64,13 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
 
         @Override
         public int getSlotLimit(int slot) {
+            // FIXME use tags instead of hard coding
             if (getStackInSlot(slot).getItem().equals(Items.IRON_ORE)) {
                 return Util.fluidCount(structure, world);
             }
             if (getStackInSlot(slot).getItem().equals(ModItems.EXAMPLE_ITEM)) {
                 return Util.fluidCount(structure, world) * 8; // FIXME ItemStacks which have a max stack size of 64 aren't able to exceed that, even though it should according to this
-                // Might have to make additional slots based on the size of the vat in order to accommodate this
+                // Might have to make additional slots based on the size of the vat in order to accommodate this, probably do that using setSize?
             }
             return 64;
 
@@ -90,6 +99,7 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
      */
     public ItemStack addItem(ItemStack stack)
     {
+        // TODO use tags instead of hard coding
         int before = stack.getCount();
 
         if(stack.getItem() == Items.IRON_ORE)
@@ -110,7 +120,6 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
             // TODO keyword appropriate
             craft(IRON_ORE_SLOT);
         }
-        return;
     }
 
     //DEBUG
@@ -120,6 +129,76 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
         for(int i = 0; i < inventory.getSlots(); i++)
             LOGGER.info("Item=" + inventory.getStackInSlot(i).getItem() + ", count=" + inventory.getStackInSlot(i).getCount());
         LOGGER.info("Structure size:" + structure.size());
+    }
+
+    // TODO implement this helper method copied from example mod, use tags, see line 65
+//    /**
+//     * @return If the stack is not empty and has a smelting recipe associated with it
+//     */
+//    private boolean isInput(final ItemStack stack) {
+//        if (stack.isEmpty())
+//            return false;
+//        return getRecipe(stack).isPresent();
+//    }
+
+    // TODO implement this helper method copied from example mod, use tags, see line 65
+//    /**
+//     * @return If the stack's item is equal to the result of smelting our input
+//     */
+//    private boolean isOutput(final ItemStack stack) {
+//        final Optional<ItemStack> result = getResult(inventory.getStackInSlot(INPUT_SLOT));
+//        return result.isPresent() && ItemStack.areItemsEqual(result.get(), stack);
+//    }
+
+    // TODO implement this helper method copied from example mod, use tags, see link 65
+//    /**
+//     * @return The smelting recipe for the input stack
+//     */
+//    private Optional<FurnaceRecipe> getRecipe(final ItemStack input) {
+//        // Due to vanilla's code we need to pass an IInventory into RecipeManager#getRecipe so we make one here.
+//        return getRecipe(new Inventory(input));
+//    }
+
+
+    /**
+     * @return The reaction recipe for the inventory
+     */
+    private Optional<RecipeVatReaction> getRecipe(final IInventory inventory) {
+        return world.getRecipeManager().getRecipe(ModRecipeTypes.RECIPE_VAT_REACTION_TYPE, inventory, world);
+    }
+
+    /**
+     * @return The result of reacting the input stack
+     */
+    private Optional<ItemStack> getResult(final ItemStack input) {
+        // Due to vanilla's code we need to pass an IInventory into RecipeManager#getRecipe and
+        // AbstractCookingRecipe#getCraftingResult() so we make one here.
+        final Inventory dummyInventory = new Inventory(input);
+        return getRecipe(dummyInventory).map(recipe -> recipe.getCraftingResult(dummyInventory));
+    }
+
+    /**
+     * Mimics the code in AbstractFurnaceTileEntity#getCookTime()
+     *
+     * @return The custom smelt time or 200 if there is no recipe for the input
+     */
+    private short getSmeltTime(final ItemStack input) {
+        // TODO implement
+        return 0;
+//        return getRecipe(input)
+//                .map(AbstractCookingRecipe::getCookTime)
+//                .orElse(200)
+//                .shortValue();
+    }
+
+    @Override
+    public void onLoad() {
+        // TODO implement
+        super.onLoad();
+        // We set this in onLoad instead of the constructor so that TileEntities
+        // constructed from NBT (saved tile entities) have this set to the proper value
+        if (world != null && !world.isRemote);
+            // lastEnergy = energy.getEnergyStored();
     }
 
     /**
@@ -180,26 +259,18 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
         return super.getCapability(cap, side);
     }
 
-    // copied from cadiboo, this will probably be helpful for determining reaction time
-//    /**
-//     * Mimics the code in {@link AbstractFurnaceTileEntity#func_214005_h()}
-//     *
-//     * @return The custom smelt time or 200 if there is no recipe for the input
-//     */
-//    private short getSmeltTime(final ItemStack input) {
-//        return getRecipe(input)
-//                .map(AbstractCookingRecipe::getCookTime)
-//                .orElse(200)
-//                .shortValue();
-//    }
-
     /**
-     * Called once per tick.
+     * Called once per tick (20 hz)
      */
     @Override
     public void tick() {
         if(!world.isRemote) {
             // LOGGER.info(world.getGameTime());
+            // each tick, calculate the remaining time for all currently progressing reactions using the rate equation
+            //  this would be handled with a call to getSmeltTime, passing the reaction, or some sort of internal call on Reaction objects, or a combination of both
+            // use the remaining time to determine the finish time, by adding it to world time
+            // increment all reactions by one
+            // if any reactions now have finish time equal to world time, nucleate them and remove them from the list of reactions
         }
 
     }
@@ -217,8 +288,6 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
 
     //DEBUG
     public void craft(int slot) {
-        // This method represents a hard coded solution, but minecraft uses json to store its recipies, including smelt times,
-        // ingredients, and outputs. You should probably use that system instead.
         /*
          * whenever an ingredient is added to the vat, check if there are enough ingredients to begin a reaction.
          *  if there aren't, do nothing.

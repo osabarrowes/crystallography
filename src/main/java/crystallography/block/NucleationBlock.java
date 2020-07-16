@@ -49,8 +49,8 @@ public class NucleationBlock extends MultiBlockComponent{
         int fluidCount = 0;
         for (Direction d : neighbors.keySet())
         {
-            // FIXME for now, we'll only require that the nucleation be touching at least one block of fluid. This does not guarantee the fluid is actually within the vat, however.
-            if(neighbors.get(d).equals(Blocks.WATER) || neighbors.get(d).equals(ModBlocks.NOT_FLUID.get()))
+            // FIXME for now, we'll only require that the nucleation be touching at least one block of fluid or product. This does not guarantee the fluid is actually within the vat, however.
+            if(neighbors.get(d).equals(Blocks.WATER) || neighbors.get(d).equals(ModBlocks.NOT_FLUID.get()) || neighbors.get(d).equals(ModBlocks.IRON_CRYSTAL_BLOCK.get())) // FIXME use tags
                 fluidCount++;
         }
 
@@ -74,19 +74,20 @@ public class NucleationBlock extends MultiBlockComponent{
 
     }
 
-    @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (worldIn.getBlockState(pos).get(VALID) && !worldIn.isRemote())
-        {
-            TileEntity myTE = worldIn.getTileEntity(pos);
-            if(myTE instanceof NucleationBlockTileEntity)
-            {
-                LOGGER.info("My controller is at " + ((NucleationBlockTileEntity) myTE).getControllerPos());
-            }
-
-        }
-        return ActionResultType.SUCCESS;
-    }
+    // DEBUG
+//    @Override
+//    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+//        if (worldIn.getBlockState(pos).get(VALID) && !worldIn.isRemote())
+//        {
+//            TileEntity myTE = worldIn.getTileEntity(pos);
+//            if(myTE instanceof NucleationBlockTileEntity)
+//            {
+//                LOGGER.info("My controller is at " + ((NucleationBlockTileEntity) myTE).getControllerPos());
+//            }
+//
+//        }
+//        return ActionResultType.SUCCESS;
+//    }
 
 
 }

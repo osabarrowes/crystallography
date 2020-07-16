@@ -66,6 +66,7 @@ public class NotFluidTileEntity extends MultiBlockComponentTileEntity {
         super.read(tag);
         byte data[] = tag.getByteArray("controllerPos");
         controllerPos = new BlockPos(data[0], data[1], data[2]);
+        // FIXME I'm getting a fatal IndexOutOfBoundsException 0 from this line, and overriding the method onLoad may help here.
     }
 
     /**

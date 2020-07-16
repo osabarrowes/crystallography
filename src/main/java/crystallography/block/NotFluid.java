@@ -7,9 +7,13 @@ import crystallography.tileentity.NucleationBlockTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.HopperTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -37,6 +41,7 @@ public class NotFluid extends MultiBlockComponent {
                 if(myTE instanceof NotFluidTileEntity)
                 {
                     ((NotFluidTileEntity) myTE).setControllerPos(p);
+                    LOGGER.info("NotFluid block has set its controllerPos to " + p);
                     break;
                 }
             }
@@ -44,6 +49,16 @@ public class NotFluid extends MultiBlockComponent {
         }
 
         return true;
+    }
+
+    @Override
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        TileEntity myTE = worldIn.getTileEntity(pos);
+        if(myTE instanceof NotFluidTileEntity)
+        {
+            LOGGER.info("NotFluid controller block located at " + ((NotFluidTileEntity) myTE).getControllerPos());
+        }
+        return ActionResultType.SUCCESS;
     }
 
     @Override
