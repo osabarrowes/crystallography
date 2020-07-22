@@ -58,16 +58,18 @@ public class NotFluidTileEntity extends MultiBlockComponentTileEntity {
         }
     }
 
+
+    //TODO update to 1.16
     /**
      * Read saved data from disk into the tile entity.
      */
-    @Override
-    public void read(CompoundNBT tag) {
-        super.read(tag);
-        byte data[] = tag.getByteArray("controllerPos");
-        controllerPos = new BlockPos(data[0], data[1], data[2]);
-        // FIXME I'm getting a fatal IndexOutOfBoundsException 0 from this line, and overriding the method onLoad may help here.
-    }
+//    @Override
+//    public void read(CompoundNBT tag) {
+//        // super.read(tag);
+//        byte data[] = tag.getByteArray("controllerPos");
+//        controllerPos = new BlockPos(data[0], data[1], data[2]);
+//        // FIXME I'm getting a fatal IndexOutOfBoundsException 0 from this line, and overriding the method onLoad may help here.
+//    }
 
     /**
      * Write data from the tile entity into a compound tag for saving to disk.

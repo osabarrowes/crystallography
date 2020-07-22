@@ -201,15 +201,16 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
             // lastEnergy = energy.getEnergyStored();
     }
 
-    /**
-     * Read saved data from disk into the tile entity.
-     */
-    @Override
-    public void read(CompoundNBT tag) {
-        super.read(tag);
-        this.inventory.deserializeNBT(tag.getCompound(INVENTORY_TAG));
-        this.structure = structureDeserialize(tag.getCompound(STRUCTURE_TAG));
-    }
+    // TODO update to 1.16
+//    /**
+//     * Read saved data from disk into the tile entity.
+//     */
+//    @Override
+//    public void read(CompoundNBT tag) {
+//        super.read(tag);
+//        this.inventory.deserializeNBT(tag.getCompound(INVENTORY_TAG));
+//        this.structure = structureDeserialize(tag.getCompound(STRUCTURE_TAG));
+//    }
 
     /**
      * Write data from the tile entity into a compound tag for saving to disk.

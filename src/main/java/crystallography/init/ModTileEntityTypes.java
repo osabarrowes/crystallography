@@ -25,7 +25,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public class ModTileEntityTypes {
 
-    public static final DeferredRegister<TileEntityType<?>> TILE_ENTITY_TYPES = new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, Crystallography.MOD_ID);
+    public static final DeferredRegister<TileEntityType<?>> TILE_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, Crystallography.MOD_ID);
 
     // We don't have a datafixer for our TileEntities, so we pass null into build. (Cadiboo)
     // Whatever that means...

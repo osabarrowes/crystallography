@@ -13,7 +13,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class ModRecipeTypes {
 
-    public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_TYPES = new DeferredRegister<>(ForgeRegistries.RECIPE_SERIALIZERS, Crystallography.MOD_ID);
+    public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_TYPES =  DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Crystallography.MOD_ID);
 
     public static final IRecipeSerializer<RecipeVatReaction> VAT_REACTION_SERIALIZER = new RecipeVatReaction.Serializer();
     public static final RegistryObject<IRecipeSerializer<RecipeVatReaction>> RECIPE_VAT_REACTION = RECIPE_TYPES.register("recipe_vat_reaction_serializer", RecipeVatReaction.Serializer::new);

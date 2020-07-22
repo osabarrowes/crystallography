@@ -2,7 +2,6 @@ package crystallography.init;
 
 import crystallography.Crystallography;
 import crystallography.block.*;
-import crystallography.libs.TestFluid;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.material.Material;
@@ -26,7 +25,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ModBlocks {
 
     // TODO blocks should have properties more indicative of their structure rather than all being the same material, hardness and resistance, etc.
-    public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, Crystallography.MOD_ID);
+    public static final DeferredRegister<Block> BLOCKS =  DeferredRegister.create(ForgeRegistries.BLOCKS, Crystallography.MOD_ID);
 
     // This block has the ROCK material, meaning it needs at least a wooden pickaxe to break it. It is very similar to Iron Ore
     public static final RegistryObject<Block> EXAMPLE_ORE = BLOCKS.register("example_ore", () -> new Block(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F)));
@@ -46,8 +45,5 @@ public class ModBlocks {
             .hardnessAndResistance(1.5F)
             .doesNotBlockMovement()
     ));
-
-    public static final RegistryObject<Block> UNIVERSAL_SOLVENT_FLUID_BLOCK = BLOCKS.register("universal_solvent_fluid_block", () -> new FlowingFluidBlock(() -> (FlowingFluid) ModFluids.UNIVERSAL_SOLVENT.get(), Block.Properties.create(Material.WATER)));
-    public static final RegistryObject<Block> TEST_FLUID_BLOCK = BLOCKS.register("test_fluid_block", () -> new FlowingFluidBlock(TestFluid::new, Block.Properties.create(Material.WATER)));
 
 }
