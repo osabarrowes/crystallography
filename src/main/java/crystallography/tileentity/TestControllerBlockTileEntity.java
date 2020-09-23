@@ -201,16 +201,13 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
             // lastEnergy = energy.getEnergyStored();
     }
 
-    // TODO update to 1.16
-//    /**
-//     * Read saved data from disk into the tile entity.
-//     */
-//    @Override
-//    public void read(CompoundNBT tag) {
-//        super.read(tag);
-//        this.inventory.deserializeNBT(tag.getCompound(INVENTORY_TAG));
-//        this.structure = structureDeserialize(tag.getCompound(STRUCTURE_TAG));
-//    }
+    // FIXME mappings
+    @Override
+    public void func_230337_a_(BlockState blockstate, CompoundNBT tag) {
+        super.func_230337_a_(blockstate, tag);
+        this.inventory.deserializeNBT(tag.getCompound(INVENTORY_TAG));
+        this.structure = structureDeserialize(tag.getCompound(STRUCTURE_TAG));
+    }
 
     /**
      * Write data from the tile entity into a compound tag for saving to disk.
@@ -223,6 +220,10 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
         return tag;
     }
 
+    /**
+     * Helper method for serializing a structure to NBT
+     * @param structure the set of blockpos which represents the block in this multiblock structure
+     */
     private CompoundNBT structureSerialize(Collection<BlockPos> structure) {
         CompoundNBT tag = new CompoundNBT();
         int i = 0;
@@ -237,6 +238,9 @@ public class TestControllerBlockTileEntity extends TileEntity implements ITickab
         return tag;
     }
 
+    /**
+     * Helper method for deserializing a structure from NBT
+     */
     private Set<BlockPos> structureDeserialize(CompoundNBT tag) {
         Set<BlockPos> structure = new HashSet<>();
         int size = tag.getInt("structureSize");
